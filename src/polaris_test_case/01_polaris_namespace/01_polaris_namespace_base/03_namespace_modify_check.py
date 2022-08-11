@@ -21,7 +21,7 @@ class NamespaceModifyCheck(PolarisTestCase):
 
     def run_test(self):
         # ===========================
-        self.get_console_token_first()
+        self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ===========================
         self.start_step("Create one regular polaris namespace.")

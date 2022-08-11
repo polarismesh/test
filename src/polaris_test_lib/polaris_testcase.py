@@ -26,7 +26,7 @@ class PolarisTestCase(TestCase):
     def run_test(self):
         pass
 
-    def get_console_token_first(self, username="polaris", password="polaris"):
+    def get_console_token(self, username="polaris", password="polaris"):
         # ===========================
         self.start_step("Get polaris main user console token.")
         login_url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH

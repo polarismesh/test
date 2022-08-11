@@ -1,5 +1,7 @@
 {
-    "tests": ["polaris_test_case.polaris_initial_login_check"],
+    "tests": [
+        "polaris_test_case.polaris_initial_login_check"
+    ],
     "excluded_name": [],
     "owner": [],
     "priority": ["BVT", "High"],

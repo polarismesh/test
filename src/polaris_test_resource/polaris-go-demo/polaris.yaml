@@ -1,0 +1,6 @@
+global:
+  serverConnector:
+    addresses:
+      - ipaddr
+  location:
+    provider: tencent
