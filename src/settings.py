@@ -4,7 +4,7 @@ Use settings.get("CONFIG_NAME", "alternate_value") or settings.CONFIG_NAME to re
 """
 
 # polaris console address
-POLARIS_SERVER_ADDR = "127.0.0.1"
+POLARIS_SERVER_ADDR = "43.138.246.11"
 
 # polaris console address
 POLARIS_CONSOLE_ADDR = "{POLARIS_SERVER_ADDR}:8080".format(POLARIS_SERVER_ADDR=POLARIS_SERVER_ADDR)
