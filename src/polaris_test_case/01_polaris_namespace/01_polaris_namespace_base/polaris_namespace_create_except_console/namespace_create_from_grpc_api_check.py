@@ -32,7 +32,7 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         # ===========================
         test_now_dir = os.path.abspath(__file__)
         self.log_info("Polaris-test now directory: " + test_now_dir)
-        test_root_dir = os.path.abspath(os.path.join(test_now_dir, "../../../.."))
+        test_root_dir = os.path.abspath(os.path.join(test_now_dir, "../../../../.."))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/polaris-go-demo"
         self.log_info("Polaris-test resource directory: " + test_resource_dir)
