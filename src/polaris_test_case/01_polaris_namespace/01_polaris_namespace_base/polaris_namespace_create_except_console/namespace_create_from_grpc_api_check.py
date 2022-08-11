@@ -30,6 +30,8 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         self.service_name = "AutoTestPolarisGRPCService--" + _random_str
 
         # ===========================
+        test_now_dir = os.path.abspath(__file__)
+        self.log_info("Polaris-test now directory: " + test_now_dir)
         test_root_dir = os.path.abspath(os.path.join(os.getcwd(), "../../../.."))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/polaris-go-demo"
