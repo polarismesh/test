@@ -48,7 +48,6 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         else:
             self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
 
-
         cmd_pre_deal_2 = "cp -r %s/* %s/" % (test_resource_dir, new_directory)
         if os.system(cmd_pre_deal_2) != 0:
             raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_2)
@@ -58,10 +57,10 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
         host = socket.gethostbyname(socket.gethostname())
         port = random.randint(30000, 50000)
-        cmd_exe = "cd /root/%s && chmod 777 provider && sed -i 's/ipaddr/%s:8091/g' polaris.yaml && " \
+        cmd_exe = "cd %s && chmod 777 provider && sed -i 's/ipaddr/%s:8091/g' polaris.yaml && " \
                   "nohup ./provider --service=%s --namespace=%s --host=%s --port=%s &" % \
                   (new_directory, reg_ip, self.service_name, self.namespace_name, host, port)
-        rsp = subprocess.call(cmd_exe, shell=True)
+        rsp = subprocess.check_output(cmd_exe, shell=True)
         self.log_info(rsp)
 
     # def post_test(self):
