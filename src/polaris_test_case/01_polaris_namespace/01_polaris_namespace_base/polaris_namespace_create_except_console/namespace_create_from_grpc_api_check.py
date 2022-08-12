@@ -26,7 +26,7 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         self.start_step("Create one polaris namespace from grpc demo.")
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.namespace_name = "AutoTestPolarisGRPCNamespace-" + _random_str
-        self.service_name = "AutoTestPolarisGRPCService--" + _random_str
+        self.service_name = "AutoTestPolarisGRPCService-" + _random_str
 
         # ===========================
         self.start_step("Get directory.")
@@ -64,8 +64,8 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
                   "nohup ./provider --service=%s --namespace=%s --host=%s --port=%s &" % \
                   (new_directory, reg_ip, self.service_name, self.namespace_name, host, port)
         self.log_info("Exec cmd: %s" % cmd_exe)
-        rsp = subprocess.check_output(cmd_exe, shell=True).decode()
-        self.log_info("\n"+rsp)
+        rsp = subprocess.check_output(cmd_exe, shell=True)
+        self.log_info("\n"+rsp.decode())
 
         # ===========================
         self.start_step("Check create namespace.")
