@@ -20,7 +20,7 @@ class PolarisServer(CommonLib):
         rsp = requests.post(url, data=data, json=json, **kwargs)
         logger.debug("<<< RE HEADERS  %s" % rsp.headers)
         logger.debug("<<< RE  STATUS  %s" % rsp.status_code)
-        logger.debug("<<< RE CONTENT  %s" % rsp.content)
+        logger.debug("<<< RE CONTENT  %s\n" % rsp.content)
         return rsp
 
     @classmethod
@@ -29,7 +29,7 @@ class PolarisServer(CommonLib):
         rsp = requests.get(url, params=params, **kwargs)
         logger.debug("<<< RE HEADERS  %s" % rsp.headers)
         logger.debug("<<< RE  STATUS  %s" % rsp.status_code)
-        logger.debug("<<< RE CONTENT  %s" % rsp.content)
+        logger.debug("<<< RE CONTENT  %s\n" % rsp.content)
         return rsp
 
     @classmethod
@@ -39,7 +39,7 @@ class PolarisServer(CommonLib):
         rsp = requests.put(url, data=data, json=json, **kwargs)
         logger.debug("<<< RE HEADERS  %s" % rsp.headers)
         logger.debug("<<< RE  STATUS  %s" % rsp.status_code)
-        logger.debug("<<< RE CONTENT  %s" % rsp.content)
+        logger.debug("<<< RE CONTENT  %s\n" % rsp.content)
         return rsp
 
     @classmethod
@@ -49,7 +49,7 @@ class PolarisServer(CommonLib):
         rsp = requests.delete(url, data=data, json=json, **kwargs)
         logger.debug("<<< RE HEADERS  %s" % rsp.headers)
         logger.debug("<<< RE  STATUS  %s" % rsp.status_code)
-        logger.debug("<<< RE CONTENT  %s" % rsp.content)
+        logger.debug("<<< RE CONTENT  %s\n" % rsp.content)
         return rsp
 
     @classmethod

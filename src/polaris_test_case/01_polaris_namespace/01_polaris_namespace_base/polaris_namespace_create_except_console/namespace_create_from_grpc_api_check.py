@@ -55,16 +55,17 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Register by grpc demo, auto create namespace if not exist.")
-        self.start_step("The polaris-server.yaml default config: namespace.autoCreate=true has been pre-set, "
-                        "if this case fail, please check your polaris-server.yaml.")
+        self.log_info("The polaris-server.yaml default config: namespace.autoCreate=true has been pre-set, "
+                      "if this case fail, please check your polaris-server.yaml.")
         reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
         host = socket.gethostbyname(socket.gethostname())
         port = random.randint(30000, 50000)
         cmd_exe = "cd %s && chmod 777 provider && sed -i 's/ipaddr/%s/g' polaris.yaml && " \
                   "nohup ./provider --service=%s --namespace=%s --host=%s --port=%s &" % \
                   (new_directory, reg_ip, self.service_name, self.namespace_name, host, port)
-        rsp = subprocess.check_output(cmd_exe, shell=True)
-        self.log_info(rsp)
+        self.log_info("Exec cmd: %s" % cmd_exe)
+        rsp = subprocess.check_output(cmd_exe, shell=True).decode()
+        self.log_info("\n"+rsp)
 
         # ===========================
         self.start_step("Check create namespace.")
@@ -74,10 +75,8 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         return_namespace_names = [ns["name"] for ns in return_namespaces]
         self.assert_("Fail! No return except polaris namespace.", self.namespace_name in return_namespace_names)
 
-    # def post_test(self):
-    #     self.clean_test_services()
-    #     self.clean_test_namespaces(self.polaris_server,
-    #                                [self.namespace_name, self.namespace_name2, self.namespace_name3])
+    def post_test(self):
+        self.clean_test_namespaces(self.polaris_server, [self.namespace_name])
 
 
 if __name__ == '__main__':

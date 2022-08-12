@@ -56,6 +56,15 @@ class PolarisTestCase(TestCase):
         if self.test_result.passed:
             self.log_info("Success to check return namespace and polaris code!")
 
+    def clean_test_services(self, polaris_server, service_name):
+        # ===========================
+        self.start_step("Test case finished, clean the test polaris services.")
+
+        # ===========================
+        self.start_step("Check service instances, need to delete instances before delete service.")
+
+
+
     def clean_test_namespaces(self, polaris_server, namespace_name):
         # ===========================
         self.start_step("Test case finished, clean the test polaris namespaces.")
