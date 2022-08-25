@@ -58,11 +58,9 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         self.log_info("The polaris-server.yaml default config: namespace.autoCreate=true has been pre-set, "
                       "if this case fail, please check your polaris-server.yaml.")
         reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
-        host = socket.gethostbyname(socket.gethostname())
-        port = random.randint(30000, 50000)
         cmd_exe = "cd %s && chmod 777 provider && sed -i 's/ipaddr/%s/g' polaris.yaml && " \
-                  "nohup ./provider --service=%s --namespace=%s --host=%s --port=%s &" % \
-                  (new_directory, reg_ip, self.service_name, self.namespace_name, host, port)
+                  "nohup ./provider -service=%s -namespace=%s -auto_shutdown=true &" % \
+                  (new_directory, reg_ip, self.service_name, self.namespace_name)
         self.log_info("Exec cmd: %s" % cmd_exe)
         rsp = subprocess.check_output(cmd_exe, shell=True)
         self.log_info("\n"+rsp.decode())
