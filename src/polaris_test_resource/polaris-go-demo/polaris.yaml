@@ -2,12 +2,3 @@ global:
   serverConnector:
     addresses:
       - ipaddr
-  statReporter:
-    enable: true
-    chain:
-      - prometheus
-    plugin:
-      prometheus:
-        metricPort: 0
-  location:
-    provider: tencent
