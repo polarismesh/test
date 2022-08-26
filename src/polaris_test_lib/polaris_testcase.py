@@ -108,10 +108,10 @@ class PolarisTestCase(TestCase):
                 return False
             return True
         elif any([service_name, namespace_name]):
-            service_name = service_name if service_name is not None else "all"
-            namespace_name = namespace_name if namespace_name is not None else "all"
+            service_name_str = service_name if service_name is not None else "all"
+            namespace_name_str = namespace_name if namespace_name is not None else "all"
             # ===========================
-            self.start_step("Delete %s service from %s namespace" % (service_name, namespace_name))
+            self.start_step("Delete %s service from %s namespace" % (service_name_str, namespace_name_str))
             describe_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
             now = time.time()
             while time.time() - now < wait_time:

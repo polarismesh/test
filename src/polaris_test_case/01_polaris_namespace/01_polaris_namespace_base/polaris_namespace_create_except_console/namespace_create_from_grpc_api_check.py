@@ -1,8 +1,9 @@
 import os
 import random
-import socket
 import string
 import subprocess
+import time
+
 from testbase.conf import settings
 from testbase.testcase import TestCase
 
