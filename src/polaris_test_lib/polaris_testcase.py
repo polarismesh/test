@@ -106,7 +106,7 @@ class PolarisTestCase(TestCase):
             if polaris_code != 200000:
                 self.fail("Fail! No return except polaris code.")
                 return False
-
+            return True
         elif any([service_name, namespace_name]):
             service_name = service_name if service_name is not None else "all"
             namespace_name = namespace_name if namespace_name is not None else "all"
@@ -120,6 +120,7 @@ class PolarisTestCase(TestCase):
                 services = rsp.json().get("services", None)
                 if len(services) == 0:
                     self.log_info("Delete service finish.")
+                    return True
                     break
 
                 delete_service_requests = []
