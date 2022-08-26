@@ -1,6 +1,5 @@
 import random
 import string
-
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
@@ -65,7 +64,8 @@ class NamespaceDescribeCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Check describe namespaces by error namespace name.")
-        rsp = self.polaris_server.describe_namespace(self.describe_namespace_url, namespace_name=self.namespace_name+"err")
+        rsp = self.polaris_server.describe_namespace(self.describe_namespace_url,
+                                                     namespace_name=self.namespace_name + "err")
         polaris_code = rsp.json().get("code", None)
         return_namespace_total = rsp.json().get("amount", None)
         return_namespace_size = rsp.json().get("size", None)
@@ -79,7 +79,7 @@ class NamespaceDescribeCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Check describe namespaces limit and offset.")
-        rsp = self.polaris_server.describe_namespace(self.describe_namespace_url, offset=total+1)
+        rsp = self.polaris_server.describe_namespace(self.describe_namespace_url, offset=total + 1)
         polaris_code = rsp.json().get("code", None)
         return_namespace_total = rsp.json().get("amount", None)
         return_namespace_size = rsp.json().get("size", None)
@@ -87,9 +87,9 @@ class NamespaceDescribeCheck(PolarisTestCase):
         self.assert_("Fail! No return except polaris namespaces size.", return_namespace_size == 0)
         self.assert_("Fail! No return except polaris amount.", return_namespace_total == total)
 
-
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, [self.namespace_name])
+
 
 if __name__ == '__main__':
     NamespaceDescribeCheck().debug_run()

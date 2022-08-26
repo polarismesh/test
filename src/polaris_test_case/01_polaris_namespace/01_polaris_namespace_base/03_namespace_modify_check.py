@@ -1,7 +1,6 @@
 import random
 import string
 import time
-
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
@@ -85,6 +84,6 @@ class NamespaceModifyCheck(PolarisTestCase):
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, [self.namespace_name, self.namespace_name2])
 
+
 if __name__ == '__main__':
     NamespaceModifyCheck().debug_run()
-

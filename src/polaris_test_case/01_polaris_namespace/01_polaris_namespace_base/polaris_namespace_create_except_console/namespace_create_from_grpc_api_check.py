@@ -1,9 +1,8 @@
 import os
+import random
 import socket
 import string
 import subprocess
-import random
-
 from testbase.conf import settings
 from testbase.testcase import TestCase
 
@@ -63,7 +62,7 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
                   (new_directory, reg_ip, self.service_name, self.namespace_name)
         self.log_info("Exec cmd: %s" % cmd_exe)
         rsp = subprocess.check_output(cmd_exe, shell=True)
-        self.log_info("\n"+rsp.decode())
+        self.log_info("\n" + rsp.decode())
 
         # ===========================
         self.start_step("Check create namespace.")

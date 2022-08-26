@@ -1,11 +1,10 @@
 import random
 import string
-
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
-from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 from src.polaris_test_lib.polaris_request import DeleteNamespaceRequest
+from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
 class NamespaceDeleteCheck(PolarisTestCase):

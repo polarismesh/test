@@ -18,7 +18,8 @@ class CreateNamespaceRequest(CommonLib):
 
 class ModifyNamespaceRequest(CommonLib):
 
-    def __init__(self, namespace_name, user_id=None, group_id=None, remove_user_id=None, remove_group_id=None,  comment=None):
+    def __init__(self, namespace_name, user_id=None, group_id=None, remove_user_id=None, remove_group_id=None,
+                 comment=None):
         self.namespace_name = namespace_name
         user_ids = self._check_list(user_id)
         group_ids = self._check_list(group_id)
@@ -38,9 +39,27 @@ class ModifyNamespaceRequest(CommonLib):
 
 class DeleteNamespaceRequest(CommonLib):
 
-    def __init__(self, namespace_name, token=None):
+    def __init__(self, namespace_name):
         self.namespace_name = namespace_name
-        self.token = token
 
     def get_dict(self):
-        return self._format_params(name=self.namespace_name, token=self.token)
+        return self._format_params(name=self.namespace_name)
+
+
+class DeleteServiceRequest(CommonLib):
+
+    def __init__(self, namespace_name, service_name):
+        self.namespace_name = namespace_name
+        self.service_name = service_name
+
+    def get_dict(self):
+        return self._format_params(namespace=self.namespace_name, name=self.service_name)
+
+
+class DeleteServiceInstanceRequest(CommonLib):
+
+    def __init__(self, service_instance_id):
+        self.service_instance_id = service_instance_id
+
+    def get_dict(self):
+        return self._format_params(id=self.service_instance_id)
