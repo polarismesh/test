@@ -134,7 +134,7 @@ class PolarisTestCase(TestCase):
                         self.fail("Fail to delete service: %s instances." % srv["name"])
                         return False
 
-                    delete_service_req = DeleteServiceRequest(namespace_name=namespace_name, service_name=service_name)
+                    delete_service_req = DeleteServiceRequest(namespace_name=srv["namespace"], service_name=srv["name"])
                     delete_service_requests.append(delete_service_req)
 
                 rsp = polaris_server.delete_service(delete_service_url, delete_service_requests)
