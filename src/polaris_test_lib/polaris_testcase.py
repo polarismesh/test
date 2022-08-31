@@ -1,12 +1,14 @@
 import os
+import random
 import time
 
 from testbase import TestCase
 from testbase.conf import settings
 
+from src.polaris_test_lib.common_lib import CommonLib
 from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_request import CreateNamespaceRequest, DeleteNamespaceRequest, \
-    DeleteServiceInstanceRequest, DeleteServiceRequest
+    DeleteServiceInstanceRequest, DeleteServiceRequest, CreateServiceRequest, CreateServiceInstanceRequest
 
 
 class PolarisTestCase(TestCase):
@@ -56,6 +58,63 @@ class PolarisTestCase(TestCase):
 
         if self.test_result.passed:
             self.log_info("Success to check return namespace and polaris code!")
+
+    def create_single_service(self, polaris_server, service_name, namespace_name="default"):
+        # ===========================
+        self.start_step("Create one regular polaris service: %s in namespace: %s." % (service_name, namespace_name))
+        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
+        self.create_service_request = CreateServiceRequest(service_name=service_name, namespace_name=namespace_name,
+                                                           owners="polaris",
+                                                           comment="Auto test create polaris service %s" % now)
+        rsp = polaris_server.create_service(self.create_service_url, self.create_service_request)
+
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+        return_service = rsp.json()["responses"][0].get("service", None)
+        if return_service is None:
+            self.fail("Fail! No return except polaris service.")
+            return
+        else:
+            re_service_name = return_service.get("name", None)
+            re_service_namespace_name = return_service.get("namespace", None)
+            self.assert_("Fail! No return except polaris service name.", re_service_name == service_name)
+            self.assert_("Fail! No return except polaris service namespace name.",
+                         re_service_namespace_name == namespace_name)
+
+        if self.test_result.passed:
+            self.log_info("Success to check return service and polaris code!")
+
+    def create_single_service_instance(self, polaris_server, service_name, namespace_name):
+        # ===========================
+        self.start_step(
+            "Create one regular polaris instance in service: %s, namespace: %s." % (service_name, namespace_name))
+        self.create_service_instance_url = "http://" + self.polaris_console_addr + PolarisServer.INSTANCE_PATH
+        host = CommonLib._random_ip()
+        port = random.randint(10000, 50000)
+        self.create_service_instance_request = CreateServiceInstanceRequest(
+            service_name=service_name, namespace_name=namespace_name, host=host, port=port, weight=100, healthy=True,
+            enable_health_check=False)
+        rsp = polaris_server.create_service_instance(self.create_service_instance_url,
+                                                     self.create_service_instance_request)
+
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+
+        return_service_instance = rsp.json()["responses"][0].get("instance", None)
+        if return_service_instance is None:
+            self.fail("Fail! No return except polaris service.")
+            return
+        else:
+            re_service_instance_host = return_service_instance.get("host", None)
+            self.assert_("Fail! No return except polaris service instance host.",
+                         re_service_instance_host == host)
+
+        if self.test_result.passed:
+            self.log_info("Success to check return service and polaris code!")
+            return return_service_instance
+        else:
+            return None
 
     def clean_test_service_instances(self, polaris_server, namespace_name, service_name, wait_time=300):
         # ===========================
@@ -185,8 +244,7 @@ class PolarisTestCase(TestCase):
             self.log_info("requery with the total number of Polaris namespaces.")
             query_times = (return_namespace_total / limit) + 1
             for offset in range(query_times):
-                rsp = polaris_server.describe_namespace(self.describe_namespace_url,
-                                                        limit=return_namespace_total, offset=offset)
+                rsp = polaris_server.describe_namespace(self.describe_namespace_url, limit=limit, offset=offset)
                 polaris_code = rsp.json().get("code", None)
                 self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
 
@@ -194,3 +252,26 @@ class PolarisTestCase(TestCase):
         else:
             return_namespaces = rsp.json().get("namespaces", None)
         return return_namespaces
+
+    def get_all_services(self, polaris_server, limit=10, namespace_name="default"):
+        self.describe_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        rsp = self.polaris_server.describe_service(url=self.describe_service_url, limit=10, offset=0,
+                                                   namespace_name=namespace_name)
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+        return_service_total = rsp.json().get("amount", None)
+
+        return_services = []
+        if return_service_total > limit:
+            self.log_info("requery with the total number of Polaris services.")
+            query_times = (return_service_total / limit) + 1
+            for offset in range(query_times):
+                rsp = polaris_server.describe_service(self.describe_service_url, limit=limit, offset=offset,
+                                                      namespace_name=namespace_name)
+                polaris_code = rsp.json().get("code", None)
+                self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+
+                return_services += rsp.json().get("services", None)
+        else:
+            return_services = rsp.json().get("services", None)
+        return return_services

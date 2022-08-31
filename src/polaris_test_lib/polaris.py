@@ -66,7 +66,7 @@ class PolarisServer(CommonLib):
         rsp = self.post(url, json=create_namespace_requests, headers=self.headers)
         return rsp
 
-    def describe_namespace(self, url, limit=10, offset=0, namespace_name=None):
+    def describe_namespace(self, url, limit, offset, namespace_name=None):
         req = self._format_params(limit=limit, offset=offset, name=namespace_name)
         rsp = self.get(url, params=req, headers=self.headers)
         return rsp
@@ -79,6 +79,11 @@ class PolarisServer(CommonLib):
     def delete_namespace(self, url, delete_namespace_request):
         delete_namespace_requests = self._check_list(delete_namespace_request)
         rsp = self.post(url, json=delete_namespace_requests, headers=self.headers)
+        return rsp
+
+    def create_service(self, url, create_service_request):
+        create_service_requests = self._check_list(create_service_request)
+        rsp = self.post(url, json=create_service_requests, headers=self.headers)
         return rsp
 
     def describe_service(self, url, limit, offset, namespace_name=None, service_name=None, host=None, department=None,
@@ -95,6 +100,11 @@ class PolarisServer(CommonLib):
     def delete_service(self, url, delete_service_request):
         delete_service_requests = self._check_list(delete_service_request)
         rsp = self.post(url, json=delete_service_requests, headers=self.headers)
+        return rsp
+
+    def create_service_instance(self, url, create_service_instance_request):
+        create_service_instance_requests = self._check_list(create_service_instance_request)
+        rsp = self.post(url, json=create_service_instance_requests, headers=self.headers)
         return rsp
 
     def describe_service_instance(self, url, limit, offset, namespace_name, service_name, host=None, protocol=None,

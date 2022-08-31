@@ -23,3 +23,12 @@ class CommonLib:
                 if callable(getattr(p, "get_dict", None)):
                     convert_param.append(p.get_dict())
         return convert_param if convert_param != [] else param
+
+    @classmethod
+    def _random_ip(cls):
+
+        import random
+        import socket
+        import struct
+
+        return socket.inet_ntoa(struct.pack('>I', random.randint(1, 0xffffffff)))
