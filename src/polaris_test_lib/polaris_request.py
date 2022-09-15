@@ -49,8 +49,7 @@ class DeleteNamespaceRequest(CommonLib):
 class CreateServiceRequest(CommonLib):
 
     def __init__(self, service_name, namespace_name, owners, user_id=None, group_id=None, business=None,
-                 department=None,
-                 comment=None, metadata=None):
+                 department=None, comment=None, metadata=None):
         self.service_name = service_name
         self.namespace_name = namespace_name
         self.owners = owners
@@ -67,7 +66,35 @@ class CreateServiceRequest(CommonLib):
     def get_dict(self):
         return self._format_params(name=self.service_name, namespace=self.namespace_name, owners=self.owners,
                                    user_ids=self.user_ids, group_ids=self.group_ids, comment=self.comment,
-                                   metadata=self.metadata, business=self.business, department=self.department, )
+                                   metadata=self.metadata, business=self.business, department=self.department)
+
+
+class ModifyServiceRequest(CommonLib):
+
+    def __init__(self, service_name, namespace_name, owners, user_id=None, group_id=None, business=None,
+                 department=None, comment=None, metadata=None, remove_user_id=None, remove_group_id=None):
+        self.service_name = service_name
+        self.namespace_name = namespace_name
+        self.owners = owners
+        self.business = business
+        self.department = department
+        self.comment = comment
+        self.metadata = metadata
+
+        user_ids = self._check_list(user_id)
+        remove_user_ids = self._check_list(remove_user_id)
+        group_ids = self._check_list(group_id)
+        remove_group_ids = self._check_list(remove_group_id)
+        self.user_ids = user_ids
+        self.group_ids = group_ids
+        self.remove_user_ids = remove_user_ids
+        self.remove_group_ids = remove_group_ids
+
+    def get_dict(self):
+        return self._format_params(name=self.service_name, namespace=self.namespace_name, owners=self.owners,
+                                   user_ids=self.user_ids, group_ids=self.group_ids, comment=self.comment,
+                                   remove_user_ids=self.remove_user_ids, remove_group_ids=self.remove_group_ids,
+                                   metadata=self.metadata, business=self.business, department=self.department)
 
 
 class DeleteServiceRequest(CommonLib):

@@ -44,18 +44,19 @@ class ServiceDescribeCheck(PolarisTestCase):
         self.namespace_name = "AutoTestPolarisNamespace-" + _random_str
         self.create_single_namespace(self.polaris_server, self.namespace_name)
         # ===========================
-        self.start_step("Create one regular polaris service in namespace %s." % self.namespace_name)
+        self.start_step(
+            "Create one regular polaris service: %s in namespace: %s." % (self.service_name, self.namespace_name))
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.service_name = "AutoTestPolarisService-" + _random_str
+
         business = "AutoTestBusiness-" + _random_str
         department = "AutoTestDepartment-" + _random_str
         metadata_key = "AutoTestMetadataKey"
         metadata_value = "AutoTestMetadataValue-" + _random_str
         metadata = {metadata_key: metadata_value}
-        self.start_step(
-            "Create one regular polaris service: %s in namespace: %s." % (self.service_name, self.namespace_name))
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
+
+        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
         self.create_service_request = CreateServiceRequest(service_name=self.service_name,
                                                            namespace_name=self.namespace_name,
                                                            owners="polaris", business=business, department=department,

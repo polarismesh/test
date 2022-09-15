@@ -54,8 +54,7 @@ class NamespaceDeleteCheck(PolarisTestCase):
             self.log_info("requery with the total number of Polaris namespaces.")
             query_times = (return_namespace_total / limit) + 1
             for offset in range(query_times):
-                rsp = self.polaris_server.describe_namespace(self.describe_namespace_url,
-                                                             limit=return_namespace_total, offset=offset)
+                rsp = self.polaris_server.describe_namespace(self.describe_namespace_url, limit=limit, offset=offset)
                 polaris_code = rsp.json().get("code", None)
                 self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
 

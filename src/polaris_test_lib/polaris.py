@@ -13,6 +13,8 @@ class PolarisServer(CommonLib):
     SERVICE_PATH = '/naming/v1/services'
     DELETE_SERVICE_PATH = SERVICE_PATH + '/delete'
 
+    EUREKA_REGISTER_PATH = "/eureka/apps/{app_id}"
+
     def __init__(self, auth_token, auth_user_id):
         self.headers = {"X-Polaris-Token": auth_token, "X-Polaris-User": auth_user_id}
 
@@ -97,6 +99,11 @@ class PolarisServer(CommonLib):
         rsp = self.get(url, params=req, headers=self.headers)
         return rsp
 
+    def modify_service(self, url, modify_service_request):
+        modify_service_requests = self._check_list(modify_service_request)
+        rsp = self.put(url, json=modify_service_requests, headers=self.headers)
+        return rsp
+
     def delete_service(self, url, delete_service_request):
         delete_service_requests = self._check_list(delete_service_request)
         rsp = self.post(url, json=delete_service_requests, headers=self.headers)
@@ -123,4 +130,18 @@ class PolarisServer(CommonLib):
     def delete_service_instance(self, url, delete_service_instance_request):
         delete_service_instance_requests = self._check_list(delete_service_instance_request)
         rsp = self.post(url, json=delete_service_instance_requests, headers=self.headers)
+        return rsp
+
+    def eureka_register_service(self, url, host, app, ip, vip, secure_vip, status, port, secure_port, home_page_url,
+                                status_page_url, health_check_url, data_center_info, lease_info, metadata):
+        req = {
+            "instance": self._format_params(hostName=host, app=app, ipAddr=ip, vipAddress=vip,
+                                            secureVipAddress=secure_vip, status=status, port=port,
+                                            securePort=secure_port, homePageUrl=home_page_url,
+                                            statusPageUrl=status_page_url, healthCheckUrl=health_check_url,
+                                            dataCenterInfo=data_center_info, leaseInfo=lease_info, metadata=metadata)
+        }
+        url = url.format(app_id=app)
+        logger.info(url)
+        rsp = self.post(url, json=req, headers=self.headers)
         return rsp
