@@ -12,7 +12,9 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 ### 1. 安装 QTAF依赖
 
-    pip3 install qtaf
+```
+pip3 install qtaf
+```
 
 ### 2. 修改用例配置文件 src/settings.py
 
