@@ -31,6 +31,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/polaris-test
 
 
+
 ### 5. 执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
 
 #### 若您期望使用执行配置文件启动：
