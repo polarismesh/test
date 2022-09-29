@@ -25,6 +25,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 配置文件中已为您默认指定了 polaris_test_case.polaris_initial_login_check 基础测试用例，用于检查初始密码登录。
 
 
+
 ### 4. 指定 Python3执行目录（可选）
 
     export PYTHONPATH=${PYTHONPATH}:${polaris_test_dir}
