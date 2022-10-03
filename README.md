@@ -38,7 +38,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
     python3 src/manage.py runtest --config-file test.json
 
-#### 若您期望自定义执行用例启动-test：
+#### 若您期望自定义执行用例启动-test123：
 
     python3 src/manage.py runtest polaris_test_case/polaris_initial_login_check
 
