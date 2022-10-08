@@ -8,7 +8,7 @@ class ServiceDescribeCheck(TestCase):
 
     """
     owner = "atom"
-    status = TestCase.EnumStatus.Ready
+    status = TestCase.EnumStatus.Design
     priority = TestCase.EnumPriority.Normal
     timeout = 5
 
