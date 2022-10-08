@@ -31,15 +31,15 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/polaris-test
 
-### 5. 执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
+### 5. 进入src目录下执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
 
 
 #### 若您期望使用执行配置文件启动：
 
-    python3 src/manage.py runtest --config-file test.json
+    python3 manage.py runtest --config-file runtest_config.json
 
 
-#### 若您期望自定义执行用例启动-testmain：
+#### 若您期望自定义执行用例启动：
 
-    python3 src/manage.py runtest polaris_test_case/polaris_initial_login_check
+    python3 manage.py runtest polaris_test_case/polaris_initial_login_check
 
