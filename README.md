@@ -43,4 +43,3 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
     python3 manage.py runtest polaris_test_case/polaris_initial_login_check
 
-
