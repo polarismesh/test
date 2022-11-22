@@ -9,9 +9,9 @@ from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
-class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
+class ServiceCreateFromGRPCApiCheck(PolarisTestCase):
     """
-    Used to test creating namespace from grpc.
+    Used to test creating service from grpc.
 
     """
     owner = "atom"
@@ -21,7 +21,7 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
 
     def run_test(self):
         # ===========================
-        self.start_step("Create one polaris namespace from grpc demo.")
+        self.start_step("Create one polaris service from grpc demo.")
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.namespace_name = "AutoTestPolarisGRPCNamespace-" + _random_str
         self.service_name = "AutoTestPolarisGRPCService-" + _random_str
@@ -42,16 +42,17 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         self.log_info("\n" + rsp.decode())
 
         # ===========================
-        self.start_step("Check create namespace.")
+        self.start_step("Check create service.")
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
-        return_namespaces = self.get_all_namespaces(self.polaris_server)
-        return_namespace_names = [ns["name"] for ns in return_namespaces]
-        self.assert_("Fail! No return except polaris namespace.", self.namespace_name in return_namespace_names)
+        return_services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)
+
+        return_service_names = [srv["name"] for srv in return_services]
+        self.assert_("Fail! No return except polaris namespace.", self.service_name in return_service_names)
 
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, [self.namespace_name])
 
 
 if __name__ == '__main__':
-    NamespaceCreateFromGRPCApiCheck().debug_run()
+    ServiceCreateFromGRPCApiCheck().debug_run()

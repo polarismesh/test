@@ -8,7 +8,8 @@ from testbase.conf import settings
 from src.polaris_test_lib.common_lib import CommonLib
 from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_request import CreateNamespaceRequest, DeleteNamespaceRequest, \
-    DeleteServiceInstanceRequest, DeleteServiceRequest, CreateServiceRequest, CreateServiceInstanceRequest
+    DeleteServiceInstanceRequest, DeleteServiceRequest, CreateServiceRequest, CreateServiceInstanceRequest, \
+    DeleteServiceAliasRequest
 
 
 class PolarisTestCase(TestCase):
@@ -28,6 +29,36 @@ class PolarisTestCase(TestCase):
 
     def run_test(self):
         pass
+
+    def create_temp_test_directory(self, random_str):
+        # ===========================
+        self.start_step("Get directory.")
+        test_now_dir = os.path.abspath(__file__)
+        self.log_info("Polaris-test now directory: " + test_now_dir)
+
+        relative_dirs = "../.."
+
+        test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
+        self.log_info("Polaris-test root directory: " + test_root_dir)
+        test_resource_dir = test_root_dir + "/polaris_test_resource/polaris-go-demo"
+        self.log_info("Polaris-test resource directory: " + test_resource_dir)
+
+        # ===========================
+        self.start_step("Create temp test directory.")
+        case_name = type(self).__name__.lower()
+        new_directory = "%s/temp-test/%s-%s" % (test_root_dir, case_name, random_str)
+        cmd_pre_deal_1 = "mkdir -p %s" % new_directory
+        if os.system(cmd_pre_deal_1) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+
+        cmd_pre_deal_2 = "cp -r %s/* %s/" % (test_resource_dir, new_directory)
+        if os.system(cmd_pre_deal_2) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_2)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_pre_deal_2)
+            return new_directory
 
     def get_console_token(self, username="polaris", password="polaris"):
         # ===========================
@@ -145,6 +176,36 @@ class PolarisTestCase(TestCase):
             self.fail("Fail! Delete service instance time out.")
             return False
 
+    def clean_test_service_aliases(self, polaris_server, namespace_name, service_name, wait_time=300):
+        # ===========================
+        self.start_step("Clean the test polaris service[%s:%s] aliases." % (namespace_name, service_name))
+        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+
+        now = time.time()
+        while time.time() - now < wait_time:
+            rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0,
+                                                             point_to_service_name=service_name)
+            aliases = rsp.json().get("aliases", None)
+            if len(aliases) == 0:
+                self.log_info("Delete service aliases finish.")
+                return True
+
+            delete_alias_requests = []
+            for alias in aliases:
+                self.log_info("Delete service alias: %s in %s" % (alias["alias"], alias["alias_namespace"]))
+                delete_alias_requests.append(
+                    DeleteServiceAliasRequest(alias_namespace_name=alias["alias_namespace"], alias_name=alias["alias"]))
+            delete_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
+            rsp = polaris_server.delete_service_alias(delete_service_alias_url, delete_alias_requests)
+            polaris_code = rsp.json().get("code", None)
+            if polaris_code != 200000:
+                self.fail("Fail! No return except polaris code.")
+                return False
+            time.sleep(1)
+        else:
+            self.fail("Fail! Delete service alias time out.")
+            return False
+
     def clean_test_services(self, polaris_server, namespace_name=None, service_name=None, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris services.")
@@ -156,6 +217,13 @@ class PolarisTestCase(TestCase):
                                                         service_name=service_name)
             if not success:
                 self.fail("Fail to delete service: %s instances." % service_name)
+                return False
+            # ===========================
+            self.start_step("Check service alias, delete.")
+            success = self.clean_test_service_aliases(polaris_server, namespace_name=namespace_name,
+                                                      service_name=service_name)
+            if not success:
+                self.fail("Fail to delete service: %s aliases." % service_name)
                 return False
             # ===========================
             self.start_step("Delete service: %s from namespace: %s" % (namespace_name, service_name))
@@ -193,6 +261,14 @@ class PolarisTestCase(TestCase):
                         self.fail("Fail to delete service: %s instances." % srv["name"])
                         return False
 
+                    # ===========================
+                    self.start_step("Check service alias, delete.")
+                    success = self.clean_test_service_aliases(polaris_server, namespace_name=srv["namespace"],
+                                                              service_name=srv["name"])
+                    if not success:
+                        self.fail("Fail to delete service: %s aliases." % srv["name"])
+                        return False
+
                     delete_service_req = DeleteServiceRequest(namespace_name=srv["namespace"], service_name=srv["name"])
                     delete_service_requests.append(delete_service_req)
 
@@ -215,6 +291,8 @@ class PolarisTestCase(TestCase):
         delete_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_NAMESPACE_PATH
 
         delete_namespace_requests = []
+        if type(namespace_names) != list:
+            namespace_names = [namespace_names]
         for n in namespace_names:
             self.log_info("Delete namespace: %s" % n)
             # ===========================
@@ -275,3 +353,24 @@ class PolarisTestCase(TestCase):
         else:
             return_services = rsp.json().get("services", None)
         return return_services
+
+    def get_all_service_aliases(self, polaris_server, limit=10):
+        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+        rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+        return_service_aliases_total = rsp.json().get("amount", None)
+
+        return_service_aliases = []
+        if return_service_aliases_total > limit:
+            self.log_info("requery with the total number of Polaris service aliases.")
+            query_times = (return_service_aliases_total / limit) + 1
+            for offset in range(query_times):
+                rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
+                polaris_code = rsp.json().get("code", None)
+                self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+
+                return_service_aliases += rsp.json().get("aliases", None)
+        else:
+            return_service_aliases = rsp.json().get("aliases", None)
+        return return_service_aliases
