@@ -29,6 +29,39 @@ class PolarisTestCase(TestCase):
     def run_test(self):
         pass
 
+    def create_temp_test_directory(self, random_str, dir_level):
+        # ===========================
+        self.start_step("Get directory.")
+        test_now_dir = os.path.abspath(__file__)
+        self.log_info("Polaris-test now directory: " + test_now_dir)
+
+        relative_dirs = ""
+        for _ in range(dir_level):
+            relative_dirs += "../"
+        relative_dirs = relative_dirs[:-1]
+
+        test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
+        self.log_info("Polaris-test root directory: " + test_root_dir)
+        test_resource_dir = test_root_dir + "/polaris_test_resource/polaris-go-demo"
+        self.log_info("Polaris-test resource directory: " + test_resource_dir)
+
+        # ===========================
+        self.start_step("Create temp test directory.")
+        case_name = type(self).__name__.lower()
+        new_directory = "%s/temp-test/%s-%s" % (test_root_dir, case_name, random_str)
+        cmd_pre_deal_1 = "mkdir -p %s" % new_directory
+        if os.system(cmd_pre_deal_1) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+
+        cmd_pre_deal_2 = "cp -r %s/* %s/" % (test_resource_dir, new_directory)
+        if os.system(cmd_pre_deal_2) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_2)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_pre_deal_2)
+            return new_directory
+
     def get_console_token(self, username="polaris", password="polaris"):
         # ===========================
         self.start_step("Get polaris main user console token.")
