@@ -1,6 +1,9 @@
 {
     "tests": [
-        "polaris_test_case.polaris_initial_login_check"
+        "polaris_test_case.polaris_initial_login_check",
+        "polaris_test_case.01_polaris_namespace.01_polaris_namespace_base",
+        "polaris_test_case.02_polaris_service.01_polaris_service_base",
+        "polaris_test_case.02_polaris_service.02_polaris_service_alias.01_service_alias_create_check"
     ],
     "excluded_name": [],
     "owner": [],
