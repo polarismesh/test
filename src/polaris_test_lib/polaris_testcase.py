@@ -195,7 +195,7 @@ class PolarisTestCase(TestCase):
                 self.log_info("Delete service alias: %s in %s" % (alias["alias"], alias["alias_namespace"]))
                 delete_alias_requests.append(
                     DeleteServiceAliasRequest(alias_namespace_name=alias["alias_namespace"], alias_name=alias["alias"]))
-            delete_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+            delete_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
             rsp = polaris_server.delete_service_alias(delete_service_alias_url, delete_alias_requests)
             polaris_code = rsp.json().get("code", None)
             if polaris_code != 200000:
