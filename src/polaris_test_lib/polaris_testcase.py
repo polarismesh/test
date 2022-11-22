@@ -283,6 +283,8 @@ class PolarisTestCase(TestCase):
         delete_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_NAMESPACE_PATH
 
         delete_namespace_requests = []
+        if type(namespace_names) != list:
+            namespace_names = [namespace_names]
         for n in namespace_names:
             self.log_info("Delete namespace: %s" % n)
             # ===========================
