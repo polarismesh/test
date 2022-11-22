@@ -76,7 +76,7 @@ class NamespaceDescribeCheck(PolarisTestCase):
         # ===========================
         self.start_step("Check describe namespaces limit and offset.")
         _kwargs = {"url": self.describe_namespace_url, "limit": 10, "offset": total + 1}
-        self.check_return_ns(check_total=0, check_size=0, check_polaris_code=200000,
+        self.check_return_ns(check_total=total, check_size=0, check_polaris_code=200000,
                              check_namespace_names=[], **_kwargs)
 
     def post_test(self):
