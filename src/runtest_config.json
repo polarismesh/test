@@ -18,7 +18,7 @@
     "report_args": "--no-output-result",
     "resmgr_backend_type": "local",
     "runner_type": "multithread",
-    "runner_args": "--concurrency 5 ",
+    "runner_args": "--concurrency 10 ",
     "share_data": {},
     "global_parameters": {}
 }
