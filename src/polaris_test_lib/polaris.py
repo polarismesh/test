@@ -5,13 +5,20 @@ from src.polaris_test_lib.common_lib import CommonLib
 
 
 class PolarisServer(CommonLib):
+    LOGIN_PATH = '/core/v1/user/login'
+
     NAMESPACE_PATH = '/naming/v1/namespaces'
     DELETE_NAMESPACE_PATH = NAMESPACE_PATH + '/delete'
-    LOGIN_PATH = '/core/v1/user/login'
+
     INSTANCE_PATH = '/naming/v1/instances'
     DELETE_INSTANCE_PATH = INSTANCE_PATH + '/delete'
+
     SERVICE_PATH = '/naming/v1/services'
     DELETE_SERVICE_PATH = SERVICE_PATH + '/delete'
+
+    SERVICE_ALIAS_PATH = '/naming/v1/service/alias'
+    DESCRIBE_SERVICE_ALIAS_PATH = '/naming/v1/service/aliases'
+    DELETE_SERVICE_ALIAS_PATH = DESCRIBE_SERVICE_ALIAS_PATH + '/delete'
 
     EUREKA_REGISTER_PATH = "/eureka/apps/{app_id}"
 
@@ -107,6 +114,27 @@ class PolarisServer(CommonLib):
     def delete_service(self, url, delete_service_request):
         delete_service_requests = self._check_list(delete_service_request)
         rsp = self.post(url, json=delete_service_requests, headers=self.headers)
+        return rsp
+
+    def create_service_alias(self, url, create_service_alias_request):
+        rsp = self.post(url, json=create_service_alias_request, headers=self.headers)
+        return rsp
+
+    def describe_service_alias(self, url, limit, offset, alias_namespace_name=None, point_to_service_name=None):
+
+        req = self._format_params(limit=limit, offset=offset, alias_namespace=alias_namespace_name,
+                                  service=point_to_service_name)
+        rsp = self.get(url, params=req, headers=self.headers)
+        return rsp
+
+    def modify_service_alias(self, url, modify_service_request):
+        modify_service_requests = self._check_list(modify_service_request)
+        rsp = self.put(url, json=modify_service_requests, headers=self.headers)
+        return rsp
+
+    def delete_service_alias(self, url, delete_service_alias_request):
+        delete_service_alias_requests = self._check_list(delete_service_alias_request)
+        rsp = self.post(url, json=delete_service_alias_requests, headers=self.headers)
         return rsp
 
     def create_service_instance(self, url, create_service_instance_request):

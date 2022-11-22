@@ -8,7 +8,8 @@ from testbase.conf import settings
 from src.polaris_test_lib.common_lib import CommonLib
 from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_request import CreateNamespaceRequest, DeleteNamespaceRequest, \
-    DeleteServiceInstanceRequest, DeleteServiceRequest, CreateServiceRequest, CreateServiceInstanceRequest
+    DeleteServiceInstanceRequest, DeleteServiceRequest, CreateServiceRequest, CreateServiceInstanceRequest, \
+    DeleteServiceAliasRequest
 
 
 class PolarisTestCase(TestCase):
@@ -175,6 +176,36 @@ class PolarisTestCase(TestCase):
             self.fail("Fail! Delete service instance time out.")
             return False
 
+    def clean_test_service_aliases(self, polaris_server, namespace_name, service_name, wait_time=300):
+        # ===========================
+        self.start_step("Clean the test polaris service[%s:%s] aliases." % (namespace_name, service_name))
+        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+
+        now = time.time()
+        while time.time() - now < wait_time:
+            rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0,
+                                                             point_to_service_name=service_name)
+            aliases = rsp.json().get("aliases", None)
+            if len(aliases) == 0:
+                self.log_info("Delete service aliases finish.")
+                return True
+
+            delete_alias_requests = []
+            for alias in aliases:
+                self.log_info("Delete service alias: %s in %s" % (alias["alias"], alias["alias_namespace"]))
+                delete_alias_requests.append(
+                    DeleteServiceAliasRequest(alias_namespace_name=alias["alias_namespace"], alias_name=alias["alias"]))
+            delete_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+            rsp = polaris_server.delete_service_alias(delete_service_alias_url, delete_alias_requests)
+            polaris_code = rsp.json().get("code", None)
+            if polaris_code != 200000:
+                self.fail("Fail! No return except polaris code.")
+                return False
+            time.sleep(1)
+        else:
+            self.fail("Fail! Delete service alias time out.")
+            return False
+
     def clean_test_services(self, polaris_server, namespace_name=None, service_name=None, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris services.")
@@ -186,6 +217,13 @@ class PolarisTestCase(TestCase):
                                                         service_name=service_name)
             if not success:
                 self.fail("Fail to delete service: %s instances." % service_name)
+                return False
+            # ===========================
+            self.start_step("Check service alias, delete.")
+            success = self.clean_test_service_aliases(polaris_server, namespace_name=namespace_name,
+                                                      service_name=service_name)
+            if not success:
+                self.fail("Fail to delete service: %s aliases." % service_name)
                 return False
             # ===========================
             self.start_step("Delete service: %s from namespace: %s" % (namespace_name, service_name))
@@ -305,3 +343,24 @@ class PolarisTestCase(TestCase):
         else:
             return_services = rsp.json().get("services", None)
         return return_services
+
+    def get_all_service_aliases(self, polaris_server, limit=10):
+        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+        rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+        return_service_aliases_total = rsp.json().get("amount", None)
+
+        return_service_aliases = []
+        if return_service_aliases_total > limit:
+            self.log_info("requery with the total number of Polaris service aliases.")
+            query_times = (return_service_aliases_total / limit) + 1
+            for offset in range(query_times):
+                rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
+                polaris_code = rsp.json().get("code", None)
+                self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+
+                return_service_aliases += rsp.json().get("aliases", None)
+        else:
+            return_service_aliases = rsp.json().get("aliases", None)
+        return return_service_aliases
