@@ -69,10 +69,10 @@ class ServiceDescribeCheck(PolarisTestCase):
         # ===========================
         self.start_step("Create one regular polaris instance in service %s." % self.service_name)
         return_service_instance = self.create_single_service_instance(self.polaris_server, self.service_name,
-                                                          namespace_name=self.namespace_name)
+                                                                      namespace_name=self.namespace_name)
         # ===========================
         self.start_step("Default describe services.")
-        services = self.get_all_services(self.polaris_server)
+        services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)
         services_names = [srv["name"] for srv in services]
         _check_services_names = [self.service_name]
         if services_names:
