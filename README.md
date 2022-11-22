@@ -34,7 +34,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 ### 5. 进入src目录下执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
 
 
-#### 若您期望使用执行配置文件启动：
+#### 若您期望使用执行配置文件启动（此处将会执行当前支持的所有测试用例场景，耗时较久）：
 
     python3 manage.py runtest --config-file runtest_config.json
 
