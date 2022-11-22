@@ -45,12 +45,12 @@ class ServiceAliasCreateCheck(PolarisTestCase):
 
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
-        return_service_alias = rsp.json()["responses"].get("alias", None)
+        return_service_alias = rsp.json().get("alias", None)
         if return_service_alias is None:
             self.fail("Fail! No return except polaris service alias .")
         else:
-            re_srv_alias_name = rsp.json()["responses"].get("alias", None)
-            re_srv_alias_namespace_name = rsp.json()["responses"].get("alias_namespace", None)
+            re_srv_alias_name = rsp.json()["alias"].get("alias", None)
+            re_srv_alias_namespace_name = rsp.json()["alias"].get("alias_namespace", None)
 
             self.assert_("Fail! No return except polaris service alias name.",
                          re_srv_alias_name == self.service_alias_name)
