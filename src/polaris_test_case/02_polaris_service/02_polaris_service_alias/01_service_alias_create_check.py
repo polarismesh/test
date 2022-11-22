@@ -5,7 +5,6 @@ import time
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
-from src.polaris_test_lib.polaris_request import CreateServiceAliasRequest
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
@@ -35,14 +34,14 @@ class ServiceAliasCreateCheck(PolarisTestCase):
         # ===========================
         self.service_alias_name = "AutoTestPolarisServiceAlias-" + _random_str
         self.start_step("Check create service alias %s in %s point to service %s in %s." % (
-        self.service_alias_name, self.alias_namespace_name, self.service_name, self.namespace_name))
+            self.service_alias_name, self.alias_namespace_name, self.service_name, self.namespace_name))
 
         self.create_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_ALIAS_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
-        self.create_service_alias_request = CreateServiceAliasRequest(self.service_name, self.namespace_name,
-                                                                      self.service_alias_name, self.alias_namespace_name,
-                                                                      comment="Auto test create polaris service %s" % now)
-        rsp = self.polaris_server.create_service_alias(self.create_service_alias_url, self.create_service_alias_request)
+        rsp = self.polaris_server.create_service_alias(self.create_service_alias_url, self.service_name,
+                                                       self.namespace_name,
+                                                       self.service_alias_name, self.alias_namespace_name,
+                                                       comment="Auto test create polaris service %s" % now)
 
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
