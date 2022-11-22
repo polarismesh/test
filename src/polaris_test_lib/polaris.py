@@ -116,9 +116,11 @@ class PolarisServer(CommonLib):
         rsp = self.post(url, json=delete_service_requests, headers=self.headers)
         return rsp
 
-    def create_service_alias(self, url, create_service_alias_request):
-        create_service_alias_requests = self._check_list(create_service_alias_request)
-        rsp = self.post(url, json=create_service_alias_requests, headers=self.headers)
+    def create_service_alias(self, url, service_name, namespace_name, alias_name, alias_namespace_name, comment=None):
+        create_service_alias_request = self._format_params(service=service_name, namespace=namespace_name,
+                                                           alias=alias_name,
+                                                           alias_namespace=alias_namespace_name, comment=comment)
+        rsp = self.post(url, json=create_service_alias_request, headers=self.headers)
         return rsp
 
     def describe_service_alias(self, url, limit, offset, alias_namespace_name=None, point_to_service_name=None):

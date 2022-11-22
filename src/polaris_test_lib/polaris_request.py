@@ -107,20 +107,6 @@ class DeleteServiceRequest(CommonLib):
         return self._format_params(namespace=self.namespace_name, name=self.service_name)
 
 
-class CreateServiceAliasRequest(CommonLib):
-
-    def __init__(self, service_name, namespace_name, alias_name, alias_namespace_name, comment=None):
-        self.service_name = service_name
-        self.namespace_name = namespace_name
-        self.alias_name = alias_name
-        self.alias_namespace_name = alias_namespace_name
-        self.comment = comment
-
-    def get_dict(self):
-        return self._format_params(service=self.service_name, namespace=self.namespace_name, alias=self.alias_name,
-                                   alias_namespace=self.alias_namespace_name, comment=self.comment)
-
-
 class ModifyServiceAliasRequest(CommonLib):
 
     def __init__(self, service_name, namespace_name, owners, user_id=None, group_id=None, business=None,
