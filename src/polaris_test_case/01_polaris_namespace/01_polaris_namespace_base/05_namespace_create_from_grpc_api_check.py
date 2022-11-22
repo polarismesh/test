@@ -27,7 +27,7 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         self.service_name = "AutoTestPolarisGRPCService-" + _random_str
 
         # ===========================
-        new_directory = self.create_temp_test_directory(_random_str, 4)
+        new_directory = self.create_temp_test_directory(_random_str)
 
         # ===========================
         self.start_step("Register by grpc demo, auto create namespace if not exist.")

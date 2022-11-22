@@ -29,16 +29,13 @@ class PolarisTestCase(TestCase):
     def run_test(self):
         pass
 
-    def create_temp_test_directory(self, random_str, dir_level):
+    def create_temp_test_directory(self, random_str):
         # ===========================
         self.start_step("Get directory.")
         test_now_dir = os.path.abspath(__file__)
         self.log_info("Polaris-test now directory: " + test_now_dir)
 
-        relative_dirs = ""
-        for _ in range(dir_level):
-            relative_dirs += "../"
-        relative_dirs = relative_dirs[:-1]
+        relative_dirs = "../.."
 
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
