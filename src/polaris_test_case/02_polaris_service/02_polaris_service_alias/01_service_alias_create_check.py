@@ -34,13 +34,13 @@ class ServiceAliasCreateCheck(PolarisTestCase):
         self.create_single_service(self.polaris_server, self.service_name, self.namespace_name)
         # ===========================
         self.service_alias_name = "AutoTestPolarisServiceAlias-" + _random_str
-        self.start_step("Check create service alias %s in %s for service %s in %s." % (
+        self.start_step("Check create service alias %s in %s point to service %s in %s." % (
         self.service_alias_name, self.alias_namespace_name, self.service_name, self.namespace_name))
 
         self.create_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_ALIAS_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
         self.create_service_alias_request = CreateServiceAliasRequest(self.service_name, self.namespace_name,
-                                                                      self.alias_name, self.alias_namespace_name,
+                                                                      self.service_alias_name, self.alias_namespace_name,
                                                                       comment="Auto test create polaris service %s" % now)
         rsp = self.polaris_server.create_service_alias(self.create_service_alias_url, self.create_service_alias_request)
 

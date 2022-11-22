@@ -117,7 +117,8 @@ class PolarisServer(CommonLib):
         return rsp
 
     def create_service_alias(self, url, create_service_alias_request):
-        rsp = self.post(url, json=create_service_alias_request, headers=self.headers)
+        create_service_alias_requests = self._check_list(create_service_alias_request)
+        rsp = self.post(url, json=create_service_alias_requests, headers=self.headers)
         return rsp
 
     def describe_service_alias(self, url, limit, offset, alias_namespace_name=None, point_to_service_name=None):
