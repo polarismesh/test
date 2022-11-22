@@ -77,8 +77,8 @@ class ServiceAliasCreateCheck(PolarisTestCase):
             self.log_info("Success to check return service alias and polaris code!")
 
     def post_test(self):
-        self.clean_test_namespaces(self.polaris_server, self.namespace_name)
-        self.clean_test_namespaces(self.polaris_server, self.alias_namespace_name)
+        self.clean_test_namespaces(self.polaris_server, [self.namespace_name])
+        self.clean_test_namespaces(self.polaris_server, [self.alias_namespace_name])
 
 
 if __name__ == '__main__':
