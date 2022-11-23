@@ -252,7 +252,7 @@ class PolarisTestCase(TestCase):
 
                 delete_service_requests = []
                 for srv in services:
-                    self.log_info("Delete service: %s from namespace: %s" % srv["name"], (srv["namespace"]))
+                    self.log_info("Delete service: %s from namespace: %s" % (srv["name"], srv["namespace"]))
                     # ===========================
                     self.start_step("Check service instances, delete first.")
                     success = self.clean_test_service_instances(polaris_server, namespace_name=srv["namespace"],
@@ -320,7 +320,7 @@ class PolarisTestCase(TestCase):
         return_namespaces = []
         if return_namespace_total > limit:
             self.log_info("requery with the total number of Polaris namespaces.")
-            query_times = (return_namespace_total / limit) + 1
+            query_times = int((return_namespace_total / limit) + 1)
             for offset in range(query_times):
                 rsp = polaris_server.describe_namespace(self.describe_namespace_url, limit=limit, offset=offset)
                 polaris_code = rsp.json().get("code", None)
