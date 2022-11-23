@@ -18,7 +18,7 @@
     "report_args": "--title polaris-autotest-results ",
     "resmgr_backend_type": "local",
     "runner_type": "multithread",
-    "runner_args": "--concurrency 10 ",
+    "runner_args": "--concurrency 5 ",
     "share_data": {},
     "global_parameters": {}
 }
