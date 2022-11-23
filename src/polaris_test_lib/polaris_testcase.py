@@ -342,7 +342,7 @@ class PolarisTestCase(TestCase):
         return_services = []
         if return_service_total > limit:
             self.log_info("requery with the total number of Polaris services.")
-            query_times = (return_service_total / limit) + 1
+            query_times = int((return_service_total / limit) + 1)
             for offset in range(query_times):
                 rsp = polaris_server.describe_service(self.describe_service_url, limit=limit, offset=offset,
                                                       namespace_name=namespace_name)
@@ -364,7 +364,7 @@ class PolarisTestCase(TestCase):
         return_service_aliases = []
         if return_service_aliases_total > limit:
             self.log_info("requery with the total number of Polaris service aliases.")
-            query_times = (return_service_aliases_total / limit) + 1
+            query_times = int((return_service_aliases_total / limit) + 1)
             for offset in range(query_times):
                 rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
                 polaris_code = rsp.json().get("code", None)
