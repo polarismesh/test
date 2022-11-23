@@ -48,7 +48,7 @@ class ServiceCreateFromGRPCApiCheck(PolarisTestCase):
         return_services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)
 
         return_service_names = [srv["name"] for srv in return_services]
-        self.assert_("Fail! No return except polaris namespace.", self.service_name in return_service_names)
+        self.assert_("Fail! No return except polaris service.", self.service_name in return_service_names)
 
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, [self.namespace_name])

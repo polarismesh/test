@@ -44,10 +44,10 @@ class ServiceDescribeCheck(PolarisTestCase):
         self.namespace_name = "AutoTestPolarisNamespace-" + _random_str
         self.create_single_namespace(self.polaris_server, self.namespace_name)
         # ===========================
-        self.start_step(
-            "Create one regular polaris service: %s in namespace: %s." % (self.service_name, self.namespace_name))
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.service_name = "AutoTestPolarisService-" + _random_str
+        self.start_step(
+            "Create one regular polaris service: %s in namespace: %s." % (self.service_name, self.namespace_name))
 
         business = "AutoTestBusiness-" + _random_str
         department = "AutoTestDepartment-" + _random_str
@@ -69,10 +69,10 @@ class ServiceDescribeCheck(PolarisTestCase):
         # ===========================
         self.start_step("Create one regular polaris instance in service %s." % self.service_name)
         return_service_instance = self.create_single_service_instance(self.polaris_server, self.service_name,
-                                                          namespace_name=self.namespace_name)
+                                                                      namespace_name=self.namespace_name)
         # ===========================
         self.start_step("Default describe services.")
-        services = self.get_all_services(self.polaris_server)
+        services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)
         services_names = [srv["name"] for srv in services]
         _check_services_names = [self.service_name]
         if services_names:

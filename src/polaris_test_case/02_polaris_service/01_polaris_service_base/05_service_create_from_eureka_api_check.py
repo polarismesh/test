@@ -67,11 +67,14 @@ class ServiceCreateFromEurekaApiCheck(PolarisTestCase):
             port=port, secure_port=secure_port, home_page_url=home_page_url, status_page_url=status_page_url,
             health_check_url=health_check_url, data_center_info=data_center_info, lease_info=lease_info,
             metadata=metadata)
-
         self.log_info(rsp)
+        # ===========================
+        self.start_step("Check create service.")
+        return_services = self.get_all_services(self.polaris_server)
+        return_service_names = [srv["name"] for srv in return_services]
+        self.assert_("Fail! No return except polaris service.", self.service_name in return_service_names)
 
     def post_test(self):
-        time.sleep(60)
         self.clean_test_services(self.polaris_server, service_name=self.service_name)
 
 

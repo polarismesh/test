@@ -23,7 +23,8 @@ class NamespaceDescribeCheck(PolarisTestCase):
         return_namespace_total = rsp.json().get("amount", None)
         return_namespace_size = rsp.json().get("size", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == check_polaris_code)
-        self.assert_("Fail! No return except polaris amount.", return_namespace_total == check_total)
+        if check_total != -1:
+            self.assert_("Fail! No return except polaris amount.", return_namespace_total == check_total)
         self.assert_("Fail! No return except polaris namespaces size.", return_namespace_size == check_size)
 
         return_namespaces = rsp.json().get("namespaces", None)
@@ -58,8 +59,6 @@ class NamespaceDescribeCheck(PolarisTestCase):
                     break
         else:
             self.fail("Fail! No return except polaris namespaces.")
-
-        total = len(return_namespaces)
         # ===========================
         self.start_step("Check describe namespaces by correct namespace name.")
         _kwargs = {"url": self.describe_namespace_url, "namespace_name": self.namespace_name, "limit": 10, "offset": 0}
@@ -75,8 +74,8 @@ class NamespaceDescribeCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Check describe namespaces limit and offset.")
-        _kwargs = {"url": self.describe_namespace_url, "limit": 10, "offset": total + 1}
-        self.check_return_ns(check_total=0, check_size=0, check_polaris_code=200000,
+        _kwargs = {"url": self.describe_namespace_url, "limit": 10, "offset": 100}
+        self.check_return_ns(check_total=-1, check_size=0, check_polaris_code=200000,
                              check_namespace_names=[], **_kwargs)
 
     def post_test(self):
