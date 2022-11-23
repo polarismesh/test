@@ -226,7 +226,7 @@ class PolarisTestCase(TestCase):
                 self.fail("Fail to delete service: %s aliases." % service_name)
                 return False
             # ===========================
-            self.start_step("Delete service: %s from namespace: %s" % (namespace_name, service_name))
+            self.start_step("Delete service: %s from namespace: %s" % (service_name, namespace_name))
             delete_service_req = DeleteServiceRequest(namespace_name=namespace_name, service_name=service_name)
             rsp = polaris_server.delete_service(delete_service_url, delete_service_req)
             polaris_code = rsp.json().get("code", None)
@@ -252,7 +252,7 @@ class PolarisTestCase(TestCase):
 
                 delete_service_requests = []
                 for srv in services:
-                    self.log_info("Delete service: %s from namespace: %s" % (srv["namespace"], srv["name"]))
+                    self.log_info("Delete service: %s from namespace: %s" % srv["name"], (srv["namespace"]))
                     # ===========================
                     self.start_step("Check service instances, delete first.")
                     success = self.clean_test_service_instances(polaris_server, namespace_name=srv["namespace"],
