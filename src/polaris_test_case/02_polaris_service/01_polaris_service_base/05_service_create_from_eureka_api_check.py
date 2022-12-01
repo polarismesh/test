@@ -72,7 +72,7 @@ class ServiceCreateFromEurekaApiCheck(PolarisTestCase):
         self.start_step("Check create service.")
         return_services = self.get_all_services(self.polaris_server)
         return_service_names = [srv["name"] for srv in return_services]
-        self.assert_("Fail! No return except polaris service.", self.service_name in return_service_names)
+        self.assert_("Fail! No return except polaris service.", self.service_name.lower() in return_service_names)
 
     def post_test(self):
         self.clean_test_services(self.polaris_server, service_name=self.service_name)
