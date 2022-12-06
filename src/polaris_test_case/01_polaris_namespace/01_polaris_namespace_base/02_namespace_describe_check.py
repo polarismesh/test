@@ -29,7 +29,8 @@ class NamespaceDescribeCheck(PolarisTestCase):
 
         return_namespaces = rsp.json().get("namespaces", None)
         return_namespace_names = [ns["name"] for ns in return_namespaces]
-        self.assert_("Fail! No return except polaris namespace.", return_namespace_names == check_namespace_names)
+        self.assert_("Fail! No return except polaris namespace.",
+                     return_namespace_names.sort() == check_namespace_names.sort())
 
     def run_test(self):
         # ===========================

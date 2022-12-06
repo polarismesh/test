@@ -147,6 +147,34 @@ class PolarisTestCase(TestCase):
         else:
             return None
 
+    def create_single_service_alias(self, polaris_server, service_name, namespace_name, service_alias_name,
+                                    alias_namespace_name):
+        # ===========================
+        self.start_step("Create service alias %s in %s point to service %s in %s." % (
+            service_alias_name, alias_namespace_name, service_name, namespace_name))
+
+        self.create_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_ALIAS_PATH
+        now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
+        rsp = polaris_server.create_service_alias(self.create_service_alias_url, service_name, namespace_name,
+                                                  service_alias_name, alias_namespace_name,
+                                                  comment="Auto test create polaris service %s" % now)
+
+        polaris_code = rsp.json().get("code", None)
+        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
+        return_service_alias = rsp.json().get("alias", None)
+        if return_service_alias is None:
+            self.fail("Fail! No return except polaris service alias .")
+        else:
+            re_srv_alias_name = rsp.json()["alias"].get("alias", None)
+            re_srv_alias_namespace_name = rsp.json()["alias"].get("alias_namespace", None)
+
+            self.assert_("Fail! No return except polaris service alias name.", re_srv_alias_name == service_alias_name)
+            self.assert_("Fail! No return except polaris service alias namespace name.",
+                         re_srv_alias_namespace_name == alias_namespace_name)
+
+        if self.test_result.passed:
+            self.log_info("Success to check return service alias and polaris code!")
+
     def clean_test_service_instances(self, polaris_server, namespace_name, service_name, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris service[%s:%s] instances." % (namespace_name, service_name))
@@ -356,7 +384,7 @@ class PolarisTestCase(TestCase):
 
     def get_all_service_aliases(self, polaris_server, limit=10):
         self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
-        rsp = self.polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
+        rsp = polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
         return_service_aliases_total = rsp.json().get("amount", None)
