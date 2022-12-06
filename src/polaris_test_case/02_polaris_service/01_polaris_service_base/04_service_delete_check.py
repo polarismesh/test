@@ -69,26 +69,8 @@ class ServiceDeleteCheck(PolarisTestCase):
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
         # ===========================
         self.start_step("Describe all services to check delete result.")
-        self.describe_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
-        limit = 10
-        rsp = self.polaris_server.describe_service(self.describe_service_url, limit=limit, offset=0)
-        polaris_code = rsp.json().get("code", None)
-        self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
-        return_service_total = rsp.json().get("amount", None)
 
-        return_services = []
-        if return_service_total > limit:
-            self.log_info("requery with the total number of Polaris services.")
-            query_times = (return_service_total / limit) + 1
-            for offset in range(query_times):
-                rsp = self.polaris_server.describe_namespace(self.describe_namespace_url, limit=limit, offset=offset)
-                polaris_code = rsp.json().get("code", None)
-                self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
-
-                return_services += rsp.json().get("services", None)
-        else:
-            return_services = rsp.json().get("services", None)
-
+        return_services = self.get_all_services(self.polaris_server)
         return_services_names = [srv["name"] for srv in return_services]
         self.assert_("Fail! Deleted polaris services still exist.", self.service_name1 not in return_services_names)
         self.assert_("Fail! Deleted polaris services still exist.", self.service_name2 not in return_services_names)
