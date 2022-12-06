@@ -4,7 +4,8 @@
     "polaris_test_case.01_polaris_namespace.01_polaris_namespace_base",
     "polaris_test_case.02_polaris_service.01_polaris_service_base",
     "polaris_test_case.02_polaris_service.02_polaris_service_alias.01_service_alias_create_check",
-    "polaris_test_case.02_polaris_service.02_polaris_service_alias.02_service_alias_describe_check"
+    "polaris_test_case.02_polaris_service.02_polaris_service_alias.02_service_alias_describe_check",
+    "polaris_test_case.02_polaris_service.02_polaris_service_alias.02_service_alias_modify_check"
   ],
   "excluded_name": [],
   "owner": [],
