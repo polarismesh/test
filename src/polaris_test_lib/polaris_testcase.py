@@ -60,7 +60,7 @@ class PolarisTestCase(TestCase):
             self.log_info("Exec cmd: %s success!" % cmd_pre_deal_2)
             return new_directory
 
-    def get_console_token(self, username="polaris", password="polaris"):
+    def get_console_token(self, username=settings.POLARIS_SERVER_USERNAME, password=settings.POLARIS_SERVER_PASSWORD):
         # ===========================
         self.start_step("Get polaris main user console token.")
         login_url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH

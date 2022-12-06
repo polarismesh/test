@@ -20,7 +20,7 @@ class PolarisServer(CommonLib):
     DESCRIBE_SERVICE_ALIAS_PATH = '/naming/v1/service/aliases'
     DELETE_SERVICE_ALIAS_PATH = DESCRIBE_SERVICE_ALIAS_PATH + '/delete'
 
-    EUREKA_REGISTER_PATH = "/eureka/apps/{app_id}"
+    EUREKA_REGISTER_PATH = "/eureka/apps"
 
     def __init__(self, auth_token, auth_user_id):
         self.headers = {"X-Polaris-Token": auth_token, "X-Polaris-User": auth_user_id}
@@ -172,7 +172,20 @@ class PolarisServer(CommonLib):
                                             statusPageUrl=status_page_url, healthCheckUrl=health_check_url,
                                             dataCenterInfo=data_center_info, leaseInfo=lease_info, metadata=metadata)
         }
-        url = url.format(app_id=app)
+        url = "%s/%s" % (url, app)
         logger.info(url)
         rsp = self.post(url, json=req, headers=self.headers)
+        return rsp
+
+    def eureka_describe_service(self, url, app=None, instance_id=None):
+        if all([app, instance_id]):
+            url = "%s/%s/%s" % (url, app, instance_id)
+        elif any([app, instance_id]):
+            if app is not None:
+                url = "%s/%s" % (url, app)
+            if instance_id is not None:
+                raise Exception("You must assign at least app or assign both app and instance.")
+
+        logger.info(url)
+        rsp = self.get(url, headers=self.headers)
         return rsp
