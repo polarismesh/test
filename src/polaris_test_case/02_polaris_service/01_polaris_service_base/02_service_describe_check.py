@@ -32,7 +32,7 @@ class ServiceDescribeCheck(PolarisTestCase):
 
         return_services = rsp.json().get("services", None)
         services_names = [srv["name"] for srv in return_services]
-        self.assert_("Fail! No return except polaris service.", services_names == check_service_names)
+        self.assert_("Fail! No return except polaris service.", services_names.sort() == check_service_names.sort())
 
     def run_test(self):
         # ===========================
