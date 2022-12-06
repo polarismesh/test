@@ -2,6 +2,8 @@ import random
 import string
 import time
 
+import requests
+import xmltodict
 from testbase.conf import settings
 from testbase.testcase import TestCase
 
@@ -29,7 +31,7 @@ class ServiceCreateFromEurekaApiCheck(PolarisTestCase):
         self.start_step("Check eureka register service.")
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
-        eureka_register_service_url = "http://" + settings.POLARIS_SERVER_EUREKA_SERVICE_ADDR + PolarisServer.EUREKA_REGISTER_PATH
+        eureka_service_url = "http://" + settings.POLARIS_SERVER_EUREKA_SERVICE_ADDR + PolarisServer.EUREKA_REGISTER_PATH
 
         host = "test.eureka.service"
         app = self.service_name
@@ -63,16 +65,23 @@ class ServiceCreateFromEurekaApiCheck(PolarisTestCase):
         }
 
         rsp = self.polaris_server.eureka_register_service(
-            eureka_register_service_url, host=host, app=app, ip=ip, vip=vip, secure_vip=secure_vip, status=status,
+            eureka_service_url, host=host, app=app, ip=ip, vip=vip, secure_vip=secure_vip, status=status,
             port=port, secure_port=secure_port, home_page_url=home_page_url, status_page_url=status_page_url,
             health_check_url=health_check_url, data_center_info=data_center_info, lease_info=lease_info,
             metadata=metadata)
         self.log_info(rsp)
         # ===========================
-        self.start_step("Check create service.")
+        self.start_step("Check create service from polaris api.")
         return_services = self.get_all_services(self.polaris_server)
         return_service_names = [srv["name"] for srv in return_services]
         self.assert_("Fail! No return except polaris service.", self.service_name.lower() in return_service_names)
+        # ===========================
+        self.start_step("Check create service from eureka api.")
+        time.sleep(10) # sleep 10 secs wait for eureka server sync
+        rsp = self.polaris_server.eureka_describe_service(eureka_service_url, app=app)
+        rsp_json = xmltodict.parse(rsp.content)
+        print(rsp_json)
+        self.assert_("Fail! No return except eureka service.", self.service_name.upper() == rsp_json["application"]["name"])
 
     def post_test(self):
         self.clean_test_services(self.polaris_server, service_name=self.service_name)

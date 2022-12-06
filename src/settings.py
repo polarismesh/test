@@ -6,6 +6,12 @@ Use settings.get("CONFIG_NAME", "alternate_value") or settings.CONFIG_NAME to re
 # polaris console address
 POLARIS_SERVER_ADDR = "127.0.0.1"
 
+# polaris console root username
+POLARIS_SERVER_USERNAME = "polaris"
+
+# polaris console root password
+POLARIS_SERVER_PASSWORD = "polaris"
+
 # polaris console address
 POLARIS_CONSOLE_ADDR = "{POLARIS_SERVER_ADDR}:8080".format(POLARIS_SERVER_ADDR=POLARIS_SERVER_ADDR)
 
