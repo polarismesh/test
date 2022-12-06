@@ -46,7 +46,7 @@ class NamespaceModifyCheck(PolarisTestCase):
             re_namespace_name = return_namespace.get("name", None)
             self.assert_("Fail! No return except polaris namespace name.", re_namespace_name == self.namespace_name)
             re_namespace_comment = return_namespace.get("comment", None)
-            self.assert_("Fail! No return except polaris namespace name.", re_namespace_comment == comment)
+            self.assert_("Fail! No return except polaris namespace comment.", re_namespace_comment == comment)
 
         if self.test_result.passed:
             self.log_info("Success to check return namespace and polaris code!")
