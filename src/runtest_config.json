@@ -1,24 +1,30 @@
 {
-    "tests": [
-        "polaris_test_case.polaris_initial_login_check",
-        "polaris_test_case.01_polaris_namespace.01_polaris_namespace_base",
-        "polaris_test_case.02_polaris_service.01_polaris_service_base",
-        "polaris_test_case.02_polaris_service.02_polaris_service_alias.01_service_alias_create_check"
-    ],
-    "excluded_name": [],
-    "owner": [],
-    "priority": ["BVT", "High"],
-    "status": ["Ready"],
-    "tag": [],
-    "excluded_tag": [],
-    "working_dir": "test_results",
-    "stop_on_failure": true,
-    "execute_type": "sequential",
-    "report_type": "html",
-    "report_args": "--title polaris-autotest-results ",
-    "resmgr_backend_type": "local",
-    "runner_type": "multithread",
-    "runner_args": "--concurrency 5 ",
-    "share_data": {},
-    "global_parameters": {}
+  "tests": [
+    "polaris_test_case.polaris_initial_login_check",
+    "polaris_test_case.01_polaris_namespace.01_polaris_namespace_base",
+    "polaris_test_case.02_polaris_service.01_polaris_service_base",
+    "polaris_test_case.02_polaris_service.02_polaris_service_alias.01_service_alias_create_check",
+    "polaris_test_case.02_polaris_service.02_polaris_service_alias.02_service_alias_describe_check"
+  ],
+  "excluded_name": [],
+  "owner": [],
+  "priority": [
+    "BVT",
+    "High"
+  ],
+  "status": [
+    "Ready"
+  ],
+  "tag": [],
+  "excluded_tag": [],
+  "working_dir": "test_results",
+  "stop_on_failure": true,
+  "execute_type": "sequential",
+  "report_type": "html",
+  "report_args": "--title polaris-autotest-results ",
+  "resmgr_backend_type": "local",
+  "runner_type": "multithread",
+  "runner_args": "--concurrency 5 ",
+  "share_data": {},
+  "global_parameters": {}
 }

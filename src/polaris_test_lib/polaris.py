@@ -130,9 +130,10 @@ class PolarisServer(CommonLib):
         rsp = self.get(url, params=req, headers=self.headers)
         return rsp
 
-    def modify_service_alias(self, url, modify_service_request):
-        modify_service_requests = self._check_list(modify_service_request)
-        rsp = self.put(url, json=modify_service_requests, headers=self.headers)
+    def modify_service_alias(self, url, alias, alias_namespace, comment=None, service_name=None, namespace_name=None):
+        req = self._format_params(alias=alias, alias_namespace=alias_namespace, comment=comment,
+                                  service=service_name, namespace=namespace_name)
+        rsp = self.put(url, json=req, headers=self.headers)
         return rsp
 
     def delete_service_alias(self, url, delete_service_alias_request):
