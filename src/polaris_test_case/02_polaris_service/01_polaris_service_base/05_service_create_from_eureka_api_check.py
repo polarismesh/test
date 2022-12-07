@@ -77,11 +77,12 @@ class ServiceCreateFromEurekaApiCheck(PolarisTestCase):
         self.assert_("Fail! No return except polaris service.", self.service_name.lower() in return_service_names)
         # ===========================
         self.start_step("Check create service from eureka api.")
-        time.sleep(10) # sleep 10 secs wait for eureka server sync
+        time.sleep(10)  # sleep 10 secs wait for eureka server sync
         rsp = self.polaris_server.eureka_describe_service(eureka_service_url, app=app)
         rsp_json = xmltodict.parse(rsp.content)
         print(rsp_json)
-        self.assert_("Fail! No return except eureka service.", self.service_name.upper() == rsp_json["application"]["name"])
+        self.assert_("Fail! No return except eureka service.",
+                     self.service_name.upper() == rsp_json["application"]["name"])
 
     def post_test(self):
         self.clean_test_services(self.polaris_server, service_name=self.service_name)

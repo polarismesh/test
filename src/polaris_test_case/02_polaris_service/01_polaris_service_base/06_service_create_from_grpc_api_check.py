@@ -27,10 +27,12 @@ class ServiceCreateFromGRPCApiCheck(PolarisTestCase):
         self.service_name = "AutoTestPolarisGRPCService-" + _random_str
 
         # ===========================
-        new_directory = self.create_temp_test_directory(_random_str)
+        new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="polaris-go-demo")
 
         # ===========================
-        self.start_step("Register by grpc demo, auto create namespace if not exist.")
+        self.start_step(
+            "Register by grpc demo[https://github.com/polarismesh/polaris-go/tree/main/examples/quickstart/provider], "
+            "auto create namespace if not exist.")
         self.log_info("The polaris-server.yaml default config: namespace.autoCreate=true has been pre-set, "
                       "if this case fail, please check your polaris-server.yaml.")
         reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
