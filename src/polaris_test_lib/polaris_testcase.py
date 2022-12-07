@@ -30,7 +30,7 @@ class PolarisTestCase(TestCase):
     def run_test(self):
         pass
 
-    def create_temp_test_directory(self, random_str):
+    def create_temp_test_directory(self, temp_dir_suffix, resource_name):
         # ===========================
         self.start_step("Get directory.")
         test_now_dir = os.path.abspath(__file__)
@@ -40,19 +40,21 @@ class PolarisTestCase(TestCase):
 
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
-        test_resource_dir = test_root_dir + "/polaris_test_resource/polaris-go-demo"
+        test_resource_dir = test_root_dir + "/polaris_test_resource/" + resource_name
         self.log_info("Polaris-test resource directory: " + test_resource_dir)
 
         # ===========================
         self.start_step("Create temp test directory.")
         case_name = type(self).__name__.lower()
-        new_directory = "%s/temp-test/%s-%s" % (test_root_dir, case_name, random_str)
+        new_directory = "%s/temp-test/%s-%s" % (test_root_dir, case_name, temp_dir_suffix)
         cmd_pre_deal_1 = "mkdir -p %s" % new_directory
         if os.system(cmd_pre_deal_1) != 0:
             raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
         else:
             self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
 
+        # ===========================
+        self.start_step("Copy resource to temp test directory.")
         cmd_pre_deal_2 = "cp -r %s/* %s/" % (test_resource_dir, new_directory)
         if os.system(cmd_pre_deal_2) != 0:
             raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_2)
