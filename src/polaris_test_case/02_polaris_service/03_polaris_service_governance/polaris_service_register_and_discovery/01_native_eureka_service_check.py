@@ -25,6 +25,8 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
 
     def run_test(self):
         # ===========================
+        self.get_console_token()
+        self.polaris_server = PolarisServer(self.token, self.user_id)
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.eureka_provider_name = "AT-NATIVE-EUREKA-SRV-PROVIDER" + _random_str.upper()
         self.eureka_consumer_name = "AT-NATIVE-EUREKA-SRV-CONSUMER" + _random_str.upper()
@@ -64,7 +66,7 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         for srv, eureka_app_info in srv_maps.items():
             self.log_info("Register eureka native %s demo." % srv)
 
-            cmd_exe = "cd {temp_dir} && nohup TencentKona-11*/bin/java" \
+            cmd_exe = "cd {temp_dir} && nohup TencentKona-11*/bin/java " \
                       "-Deureka.client.serviceUrl.defaultZone=http://{eureka_reg_ip}/eureka/ " \
                       "-Dserver.port={srv_port} " \
                       "-Dspring.application.name={eureka_app_name} " \
@@ -96,6 +98,7 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
                         self.log_info("%s start up success!" % srv_name)
                         success_list.append(srv_name)
                 except subprocess.CalledProcessError:
+                    self.log_info("%s start up waiting..." % srv_name)
                     time.sleep(5)
 
         if len(success_list) < len(srv_maps):
