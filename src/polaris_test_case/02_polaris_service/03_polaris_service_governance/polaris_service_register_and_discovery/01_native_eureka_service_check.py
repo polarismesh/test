@@ -30,8 +30,7 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         self.eureka_consumer_name = "AT-NATIVE-EUREKA-SRV-CONSUMER" + _random_str.upper()
         self.eureka_provider_port = random.randint(30000, 50000)
         self.eureka_consumer_port = random.randint(30000, 50000)
-        self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="eureka-demo")
-        new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="tencent-kona")
+        new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="eureka-demo")
         # ===========================
         self.start_step("Unzip kona jdk")
 
