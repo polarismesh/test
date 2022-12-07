@@ -13,7 +13,7 @@ from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
-class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
+class NativeEurekaServiceCheck(PolarisTestCase):
     """
     Used to test native eureka services register and discovery.
 
@@ -103,7 +103,7 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         self.start_step("Check create service from polaris api.")
         return_services = self.get_all_services(self.polaris_server)
         return_service_names = [srv["name"] for srv in return_services]
-        check_service_names = [self.eureka_provider_name, self.eureka_consumer_name]
+        check_service_names = [self.eureka_provider_name.lower(), self.eureka_consumer_name.lower()]
 
         self.assert_("Fail! No return except polaris service.",
                      set(check_service_names).issubset(set(return_service_names)))
