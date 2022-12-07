@@ -4,7 +4,7 @@
     "polaris_test_case.01_polaris_namespace.01_polaris_namespace_base",
     "polaris_test_case.02_polaris_service.01_polaris_service_base",
     "polaris_test_case.02_polaris_service.02_polaris_service_alias",
-    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_register_and_discovery.01_native_eureka_service_check.py"
+    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_register_and_discovery.01_native_eureka_service_check"
   ],
   "excluded_name": [],
   "owner": [],
