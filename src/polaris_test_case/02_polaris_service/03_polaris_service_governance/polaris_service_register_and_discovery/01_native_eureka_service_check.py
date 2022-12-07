@@ -89,14 +89,15 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
                     continue
 
                 cmd_wait = "netstat -npl | grep %s" % srv_info[1]
-                out_bytes = subprocess.check_output(cmd_wait, shell=True, timeout=15, stderr=subprocess.STDOUT)
-                self.log_info("\n" + out_bytes.decode())
-
-                if "java" in out_bytes.decode():
-                    self.log_info("%s start up success!" % srv_name)
-                    success_list.append(srv_name)
-                else:
+                try:
+                    out_bytes = subprocess.check_output(cmd_wait, shell=True, timeout=15, stderr=subprocess.STDOUT)
+                    self.log_info("\n" + out_bytes.decode())
+                    if "java" in out_bytes.decode():
+                        self.log_info("%s start up success!" % srv_name)
+                        success_list.append(srv_name)
+                except subprocess.CalledProcessError:
                     time.sleep(5)
+
         if len(success_list) < len(srv_maps):
             raise RuntimeError("Start up failed!")
 
@@ -131,8 +132,11 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         self.start_step("Stop all eureka services")
         for p in [self.eureka_provider_port, self.eureka_consumer_port]:
             cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
-            out_bytes = subprocess.check_output(cmd_kill, shell=True, timeout=15, stderr=subprocess.STDOUT)
-            self.log_info("\n" + out_bytes.decode())
+            try:
+                out_bytes = subprocess.check_output(cmd_kill, shell=True, timeout=15, stderr=subprocess.STDOUT)
+                self.log_info("\n" + out_bytes.decode())
+            except subprocess.CalledProcessError:
+                pass
         # ===========================
         self.start_step("Clean all eureka services")
         self.clean_test_services(self.polaris_server, service_name=self.eureka_consumer_name.lower())
