@@ -2,7 +2,8 @@ import random
 import string
 import time
 
-import requests
+import os
+os.system("pip3 install xmltodict")
 import xmltodict
 from testbase.conf import settings
 from testbase.testcase import TestCase

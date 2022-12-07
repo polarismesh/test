@@ -4,6 +4,7 @@ import string
 import subprocess
 import time
 
+os.system("pip3 install xmltodict")
 import xmltodict
 from testbase.conf import settings
 from testbase.testcase import TestCase
