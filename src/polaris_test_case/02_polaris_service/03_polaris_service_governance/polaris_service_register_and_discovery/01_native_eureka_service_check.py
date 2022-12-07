@@ -70,17 +70,15 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
                       "-Deureka.client.serviceUrl.defaultZone=http://{eureka_reg_ip}/eureka/ " \
                       "-Dserver.port={srv_port} " \
                       "-Dspring.application.name={eureka_app_name} " \
-                      "-jar eureka-{srv_type}*.jar > eureka-{srv_type}-{time_stamp}.log".format(
+                      "-jar eureka-{srv_type}*.jar > eureka-{srv_type}-{time_stamp}.log 2>&1 &".format(
                 temp_dir=new_directory, eureka_reg_ip=reg_ip, srv_port=eureka_app_info[1],
                 eureka_app_name=eureka_app_info[0], srv_type=srv, time_stamp=str(int(time.time()))
             )
 
-            self.log_info("Exec cmd: %s" % cmd_exe)
-            try:
-                out_bytes = subprocess.check_output(cmd_exe, shell=True, timeout=15, stderr=subprocess.STDOUT)
-                self.log_info("\n" + out_bytes.decode())
-            except subprocess.TimeoutExpired:
-                pass
+            if os.system(cmd_exe) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_exe)
         # ==================================
         self.start_step("Wait for service start up...")
         success_list = []
@@ -91,15 +89,12 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
                     continue
 
                 cmd_wait = "netstat -npl | grep %s" % srv_info[1]
-                try:
-                    out_bytes = subprocess.check_output(cmd_wait, shell=True, timeout=15, stderr=subprocess.STDOUT)
-                    self.log_info("\n" + out_bytes.decode())
-                    if "java" in out_bytes.decode():
-                        self.log_info("%s start up success!" % srv_name)
-                        success_list.append(srv_name)
-                except subprocess.CalledProcessError:
+                if os.system(cmd_wait) != 0:
                     self.log_info("%s start up waiting..." % srv_name)
                     time.sleep(5)
+                else:
+                    self.log_info("%s start up success!" % srv_name)
+                    success_list.append(srv_name)
 
         if len(success_list) < len(srv_maps):
             raise RuntimeError("Start up failed!")
@@ -135,11 +130,7 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         self.start_step("Stop all eureka services")
         for p in [self.eureka_provider_port, self.eureka_consumer_port]:
             cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
-            try:
-                out_bytes = subprocess.check_output(cmd_kill, shell=True, timeout=15, stderr=subprocess.STDOUT)
-                self.log_info("\n" + out_bytes.decode())
-            except subprocess.CalledProcessError:
-                pass
+            os.system(cmd_kill)
         # ===========================
         self.start_step("Clean all eureka services")
         self.clean_test_services(self.polaris_server, service_name=self.eureka_consumer_name.lower())
