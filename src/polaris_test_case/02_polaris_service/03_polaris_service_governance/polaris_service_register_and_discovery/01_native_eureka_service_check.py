@@ -28,8 +28,8 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
-        self.eureka_provider_name = "AT-NATIVE-EUREKA-SRV-PROVIDER" + _random_str.upper()
-        self.eureka_consumer_name = "AT-NATIVE-EUREKA-SRV-CONSUMER" + _random_str.upper()
+        self.eureka_provider_name = "AT-NATIVE-EUREKA-SRV-PROVIDER-" + _random_str.upper()
+        self.eureka_consumer_name = "AT-NATIVE-EUREKA-SRV-CONSUMER-" + _random_str.upper()
         self.eureka_provider_port = random.randint(30000, 50000)
         self.eureka_consumer_port = random.randint(30000, 50000)
         new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="eureka-demo")
@@ -119,11 +119,11 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Request eureka consumer to check provider discovery.")
-        cmd_curl = "curl -sv 'http://127.0.0.1:%s/echo?providerServiceName=%s&value=hello my friends'" % (
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/echo?providerServiceName=%s&value=hellomyfriends'" % (
             self.eureka_consumer_port, self.eureka_provider_name)
         out_bytes = subprocess.check_output(cmd_curl, shell=True, timeout=15, stderr=subprocess.STDOUT)
         self.log_info("\n" + out_bytes.decode())
-        self.assert_("Fail! No return except response.", "hello my friends" in out_bytes.decode())
+        self.assert_("Fail! No return except response.", "hellomyfriends" in out_bytes.decode())
 
     def post_test(self):
         # ===========================
