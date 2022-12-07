@@ -64,11 +64,11 @@ class EurekaServiceRegisterAndDiscoveryCheck(PolarisTestCase):
         for srv, eureka_app_info in srv_maps.items():
             self.log_info("Register eureka native %s demo." % srv)
 
-            cmd_exe = "cd {temp_dir} && nohup TencentKona-11*/bin/java " \
-                      "-D eureka.client.serviceUrl.defaultZone=http://{eureka_reg_ip}/eureka/ " \
-                      "-D server.port={srv_port} " \
-                      "-D spring.application.name={eureka_app_name} " \
-                      "-jar eureka-{srv_type}*.jar > eureka_{srv_type}_{time_stamp}.log 2>&1 &".format(
+            cmd_exe = "cd {temp_dir} && nohup TencentKona-11*/bin/java" \
+                      "-Deureka.client.serviceUrl.defaultZone=http://{eureka_reg_ip}/eureka/ " \
+                      "-Dserver.port={srv_port} " \
+                      "-Dspring.application.name={eureka_app_name} " \
+                      "-jar eureka-{srv_type}*.jar > eureka-{srv_type}-{time_stamp}.log 2>&1 &".format(
                 temp_dir=new_directory, eureka_reg_ip=reg_ip, srv_port=eureka_app_info[1],
                 eureka_app_name=eureka_app_info[0], srv_type=srv, time_stamp=str(int(time.time()))
             )
