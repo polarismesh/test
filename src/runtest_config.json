@@ -10,7 +10,8 @@
   "owner": [],
   "priority": [
     "BVT",
-    "High"
+    "High",
+    "Normal"
   ],
   "status": [
     "Ready"
