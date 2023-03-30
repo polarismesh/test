@@ -165,7 +165,7 @@ class PolarisTestCase(TestCase):
                 self.log_info("Exec cmd: %s success!" % cmd_pre_deal_3)
             # ===========================
             self.start_step("Start maven install")
-            cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype" % (
+            cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype -Dmaven.test.skip=true" % (
                 test_java_home, test_resource_dir)
             if os.system(cmd_pre_deal_4) != 0:
                 raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_4)
