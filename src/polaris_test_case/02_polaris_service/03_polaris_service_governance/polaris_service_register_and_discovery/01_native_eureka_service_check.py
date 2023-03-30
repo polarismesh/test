@@ -34,23 +34,7 @@ class NativeEurekaServiceCheck(PolarisTestCase):
         self.eureka_consumer_port = random.randint(30000, 50000)
         new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="eureka-demo")
         # ===========================
-        self.start_step("Unzip kona jdk")
-
-        cmd_wget = "cd %s && wget https://github.com/Tencent/TencentKona-11/releases/download/kona11.0.17/TencentKona-11.0.17.b1-jdk_linux-x86_64.tar.gz" % new_directory
-
-        if os.system(cmd_wget) != 0:
-            raise RuntimeError("Exec cmd: %s error!" % cmd_wget)
-        else:
-            self.log_info("Exec cmd: %s success!" % cmd_wget)
-
-        jdk_name = "TencentKona-11*"
-        cmd_unzip = "cd %s && tar zxvf %s" % (new_directory, jdk_name)
-
-        if os.system(cmd_unzip) != 0:
-            raise RuntimeError("Exec cmd: %s error!" % cmd_unzip)
-        else:
-            self.log_info("Exec cmd: %s success!" % cmd_unzip)
-
+        self.get_kona_jdk(new_directory, kona_jdk_version=11)
         # ===========================
         self.start_step(
             "Register by native eureka demo"
@@ -65,14 +49,14 @@ class NativeEurekaServiceCheck(PolarisTestCase):
 
         for srv, eureka_app_info in srv_maps.items():
             self.log_info("Register eureka native %s demo." % srv)
-
+            date_now = time.strftime("%Y%m%d%H%M", time.localtime(int(time.time())))
             cmd_exe = "cd {temp_dir} && nohup TencentKona-11*/bin/java " \
                       "-Deureka.client.serviceUrl.defaultZone=http://{eureka_reg_ip}/eureka/ " \
                       "-Dserver.port={srv_port} " \
                       "-Dspring.application.name={eureka_app_name} " \
-                      "-jar eureka-{srv_type}*.jar > eureka-{srv_type}-{time_stamp}.log 2>&1 &".format(
+                      "-jar eureka-{srv_type}*.jar > eureka-{srv_type}-{srv_port}-{date}.log 2>&1 &".format(
                 temp_dir=new_directory, eureka_reg_ip=reg_ip, srv_port=eureka_app_info[1],
-                eureka_app_name=eureka_app_info[0], srv_type=srv, time_stamp=str(int(time.time()))
+                eureka_app_name=eureka_app_info[0], srv_type=srv, date=date_now
             )
 
             if os.system(cmd_exe) != 0:
@@ -119,11 +103,13 @@ class NativeEurekaServiceCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Request eureka consumer to check provider discovery.")
+
         cmd_curl = "curl -sv 'http://127.0.0.1:%s/echo?providerServiceName=%s&value=hellomyfriends'" % (
             self.eureka_consumer_port, self.eureka_provider_name)
-        out_bytes = subprocess.check_output(cmd_curl, shell=True, timeout=15, stderr=subprocess.STDOUT)
-        self.log_info("\n" + out_bytes.decode())
-        self.assert_("Fail! No return except response.", "hellomyfriends" in out_bytes.decode())
+        self.req_and_check(
+            srv_res_check_map={"hellomyfriends": {"eureka_provider": 1}},
+            cmd_req_line=cmd_curl, all_req_num=10
+        )
 
     def post_test(self):
         # ===========================
