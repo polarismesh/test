@@ -27,7 +27,7 @@ class PolarisTestCase(TestCase):
         else:
             self.fail(
                 "Check your config file in [{config_dir}] and set POLARIS_SERVER_HTTP_RESTFUL_API_ADDR in [{config_dir}]."
-                .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
+                    .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
 
     def run_test(self):
         pass
@@ -127,7 +127,8 @@ class PolarisTestCase(TestCase):
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
-        cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
+        cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (
+        test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
         test_java_home = subprocess.check_output(cmd_pre_deal_0, shell=True, timeout=60,
                                                  stderr=subprocess.STDOUT).decode()
         self.log_info("\n" + test_java_home)
@@ -141,7 +142,7 @@ class PolarisTestCase(TestCase):
             # ===========================
             self.start_step("Download spring-cloud-tencent %s" % sct_version)
             cmd_clone = "cd %s && git clone https://github.com/Tencent/spring-cloud-tencent.git -b %s.0" % (
-            test_resource_dir, sct_version)
+                test_resource_dir, sct_version)
 
             if os.system(cmd_clone) != 0:
                 raise RuntimeError("Exec cmd: %s error!" % cmd_clone)
@@ -165,7 +166,7 @@ class PolarisTestCase(TestCase):
             # ===========================
             self.start_step("Start maven install")
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype" % (
-            test_java_home, test_resource_dir)
+                test_java_home, test_resource_dir)
             if os.system(cmd_pre_deal_4) != 0:
                 raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_4)
             else:
@@ -173,11 +174,8 @@ class PolarisTestCase(TestCase):
             # ===========================
             self.start_step("Copy example to ./")
             cmd_pre_deal_5 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
-            test_resource_dir, test_resource_dir)
-            if os.system(cmd_pre_deal_5) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_5)
-            else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_5)
+                test_resource_dir, test_resource_dir)
+            subprocess.check_output(cmd_pre_deal_5, shell=True, timeout=360, stderr=subprocess.STDOUT).decode()
 
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
