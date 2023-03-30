@@ -1,7 +1,6 @@
 import os
 import random
 import string
-import subprocess
 import time
 
 from testbase.conf import settings
@@ -33,14 +32,14 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         # ===========================
         self.get_kona_jdk()
         self.get_spring_cloud_tencent_example()
-        new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str,
-                                                        resource_name="spring-cloud-tencent-demo")
+        new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="kona-jdk")
+        self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="kona-jdk",
+                                        file_name="discovery-*.jar")
         # ===========================
         self.start_step(
             "Register by spring cloud tencent demo: discovery-callee/caller"
             "[https://github.com/Tencent/spring-cloud-tencent/tree/{version}/spring-cloud-tencent-examples/polaris-discovery-example].")
         reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
-
         srv_maps = {
             "discovery-caller-service": [
                 {"srv_port": self.discovery_caller_port,
@@ -56,7 +55,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         }
 
         for srv, srv_info in srv_maps.items():
-            self.log_info("Register eureka native %s demo." % srv)
+            self.log_info("Register spring cloud tencent %s example." % srv)
             for _srv in srv_info:
                 _region_info = _srv["srv_region_info"].split(":")
                 _srv_port = _srv["srv_port"]
@@ -73,7 +72,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                           ">{srv_name}.{srv_port}.{date}.log 2>&1 &".format(
                     zone=_region_info[0], region=_region_info[1], campus=_region_info[2],
                     temp_dir=new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION,
-                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, srv_type=srv, date=date_now
+                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, date=date_now
                 )
 
                 if os.system(cmd_exe) != 0:
@@ -124,26 +123,23 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                         self.assert_("Fail! No return except service instance.",
                                      ins_location == _srv_info["srv_region_info"])
 
-
-
         # ===========================
         self.start_step("Request sct consumer to check provider discovery.")
 
         cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/callee/info'" % self.discovery_caller_port
         self.req_and_check(
-            srv_res_check_map={self.discovery_callee1_port: {"discovery_callee1": 1},
-                               self.discovery_callee2_port: {"discovery_callee2": 1}},
+            srv_res_check_map={self.discovery_callee1_port: {"discovery_callee1": 0.5},
+                               self.discovery_callee2_port: {"discovery_callee2": 0.5}},
             cmd_req_line=cmd_curl, all_req_num=30
         )
 
-
     def post_test(self):
         # ===========================
-        self.start_step("Stop all eureka services")
-        for p in [self.eureka_provider_port, self.eureka_consumer_port]:
+        self.start_step("Stop all discovery services")
+        for p in [self.discovery_caller_port, self.discovery_callee1_port, self.discovery_callee2_port]:
             cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
             os.system(cmd_kill)
         # ===========================
-        self.start_step("Clean all eureka services")
-        self.clean_test_services(self.polaris_server, service_name=self.eureka_consumer_name.lower())
-        self.clean_test_services(self.polaris_server, service_name=self.eureka_provider_name.lower())
+        self.start_step("Clean all discovery services")
+        self.clean_test_services(self.polaris_server, service_name="discovery-caller-service")
+        self.clean_test_services(self.polaris_server, service_name="discovery-callee-service")

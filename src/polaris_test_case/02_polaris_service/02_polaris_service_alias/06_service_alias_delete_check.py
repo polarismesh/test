@@ -1,11 +1,10 @@
 import random
 import string
-import time
 
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
-from src.polaris_test_lib.polaris_request import CreateServiceRequest, DeleteServiceRequest, DeleteServiceAliasRequest
+from src.polaris_test_lib.polaris_request import DeleteServiceAliasRequest
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 

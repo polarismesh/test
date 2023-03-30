@@ -25,13 +25,14 @@ class PolarisTestCase(TestCase):
             self.log_info("POLARIS_SERVER_HTTP_RESTFUL_API_ADDR: %s" % POLARIS_SERVER_HTTP_RESTFUL_API_ADDR)
             self.polaris_server_http_restful_api_addr = POLARIS_SERVER_HTTP_RESTFUL_API_ADDR
         else:
-            self.fail("Check your config file in [{config_dir}] and set POLARIS_SERVER_HTTP_RESTFUL_API_ADDR in [{config_dir}]."
-                      .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
+            self.fail(
+                "Check your config file in [{config_dir}] and set POLARIS_SERVER_HTTP_RESTFUL_API_ADDR in [{config_dir}]."
+                .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
 
     def run_test(self):
         pass
 
-    def create_temp_test_directory(self, temp_dir_suffix, resource_name):
+    def create_temp_test_directory(self, temp_dir_suffix, resource_name, file_name="*"):
         # ===========================
         self.start_step("Get directory.")
         test_now_dir = os.path.abspath(__file__)
@@ -56,7 +57,7 @@ class PolarisTestCase(TestCase):
 
         # ===========================
         self.start_step("Copy resource to temp test directory.")
-        cmd_pre_deal_2 = "cp -r %s/* %s/" % (test_resource_dir, new_directory)
+        cmd_pre_deal_2 = "cp -r %s/%s %s/" % (test_resource_dir, file_name, new_directory)
         if os.system(cmd_pre_deal_2) != 0:
             raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_2)
         else:
@@ -99,7 +100,7 @@ class PolarisTestCase(TestCase):
 
             # ===========================
             self.start_step("Unzip kona jdk")
-            jdk_name = "TencentKona-%s*" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
+            jdk_name = "TencentKona-%s*" % kona_jdk_version
             cmd_unzip = "cd %s && tar zxvf %s" % (test_resource_dir, jdk_name)
 
             if os.system(cmd_unzip) != 0:
@@ -126,6 +127,10 @@ class PolarisTestCase(TestCase):
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
+        cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -name 'TencentKona-%s*' -type d" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
+        test_java_home = subprocess.check_output(cmd_pre_deal_0, shell=True, timeout=60,
+                                                 stderr=subprocess.STDOUT).decode()
+        self.log_info("\n" + test_java_home)
 
         cmd_pre_deal_1 = "find %s -name 'spring-cloud-tencent' -type d" % test_resource_dir
 
@@ -135,22 +140,44 @@ class PolarisTestCase(TestCase):
         if "spring-cloud-tencent" not in output:
             # ===========================
             self.start_step("Download spring-cloud-tencent %s" % sct_version)
-            cmd_clone = "cd %s && git clone https://github.com/Tencent/spring-cloud-tencent.git -b %s.0" % (test_resource_dir, sct_version)
+            cmd_clone = "cd %s && git clone https://github.com/Tencent/spring-cloud-tencent.git -b %s.0" % (
+            test_resource_dir, sct_version)
 
             if os.system(cmd_clone) != 0:
                 raise RuntimeError("Exec cmd: %s error!" % cmd_clone)
             else:
                 self.log_info("Exec cmd: %s success!" % cmd_clone)
 
-            # ===========================
-            self.start_step("Unzip kona jdk")
-            jdk_name = "TencentKona-%s*" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
-            cmd_unzip = "cd %s && tar zxvf %s" % (test_resource_dir, jdk_name)
+        cmd_pre_deal_2 = "find %s -name '*.jar' -type f" % test_resource_dir
 
-            if os.system(cmd_unzip) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_unzip)
+        output = subprocess.check_output(cmd_pre_deal_2, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
+        self.log_info("\n" + output)
+
+        if "jar" not in output:
+            # ===========================
+            self.start_step("Maven build spring-cloud-tencent example")
+            self.start_step("Update maven")
+            cmd_pre_deal_3 = "yum install maven -y"
+            if os.system(cmd_pre_deal_3) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
             else:
-                self.log_info("Exec cmd: %s success!" % cmd_unzip)
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+            # ===========================
+            self.start_step("Start maven install")
+            cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype" % (
+            test_java_home, test_resource_dir)
+            if os.system(cmd_pre_deal_4) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+            # ===========================
+            self.start_step("Copy example to ./")
+            cmd_pre_deal_4 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
+            test_resource_dir, test_resource_dir)
+            if os.system(cmd_pre_deal_4) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
 
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
@@ -489,6 +516,7 @@ class PolarisTestCase(TestCase):
 
     def req_and_check(self, srv_res_check_map, cmd_req_line, all_req_num, request_interval=1):
         # srv_res_check_map = {"uniq_check_response1": {"check_srv_name1": check_proportion1}, ...}
+        # all proportion should add up to 1, such as (0.5, 0.5), (1, 0), (0.2, 0.3, 0.5)
 
         self.log_info("Caller will request: %s times." % all_req_num)
         # 1. init check map
@@ -530,4 +558,3 @@ class PolarisTestCase(TestCase):
 
             self.assert_("Fail! The deviation of callee-received requests must be less than 10% of the average!",
                          float(abs(real_hit_req_nums - except_hit_req_nums)) <= float(except_hit_req_nums * 0.1))
-

@@ -1,8 +1,8 @@
+import os
 import random
 import string
 import time
 
-import os
 os.system("pip3 install xmltodict")
 import xmltodict
 from testbase.conf import settings

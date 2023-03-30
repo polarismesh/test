@@ -1,7 +1,6 @@
 import os
 import random
 import string
-import subprocess
 import time
 
 os.system("pip3 install xmltodict")
@@ -68,7 +67,7 @@ class NativeEurekaServiceCheck(PolarisTestCase):
         self.start_step("Wait for service start up...")
         success_list = []
         start = time.time()
-        while len(success_list) < 3 and time.time() - start < 60:
+        while len(success_list) < 2 and time.time() - start < 60:
             for srv_name, srv_info in srv_maps.items():
                 if srv_name in success_list:
                     continue

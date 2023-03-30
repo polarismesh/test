@@ -3,8 +3,8 @@ For test case execution management.
 you can go to https://qta-testbase.readthedocs.io/zh/latest/testrun.html for detailed usage.
 """
 
-import sys
 import os
+import sys
 
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJ_ROOT not in sys.path:
