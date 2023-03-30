@@ -159,25 +159,25 @@ class PolarisTestCase(TestCase):
             self.start_step("Update maven")
             cmd_pre_deal_3 = "yum install maven -y"
             if os.system(cmd_pre_deal_3) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_3)
             else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_3)
             # ===========================
             self.start_step("Start maven install")
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype" % (
             test_java_home, test_resource_dir)
             if os.system(cmd_pre_deal_4) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_4)
             else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_4)
             # ===========================
             self.start_step("Copy example to ./")
-            cmd_pre_deal_4 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
+            cmd_pre_deal_5 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
             test_resource_dir, test_resource_dir)
-            if os.system(cmd_pre_deal_4) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_1)
+            if os.system(cmd_pre_deal_5) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_5)
             else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_1)
+                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_5)
 
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
