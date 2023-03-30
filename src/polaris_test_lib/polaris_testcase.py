@@ -486,6 +486,8 @@ class PolarisTestCase(TestCase):
         self.start_step("Check response proportion.")
         for callee_srv, real_hit_req_nums in srv_res_times_check_map.items():
             self.log_info("%s received: %s" % (callee_srv, real_hit_req_nums))
+            if callee_srv == "unknown":
+                continue
             except_hit_req_nums = srv_res_prop_check_map[callee_srv] * all_req_num
             self.log_info("%s except: %s" % (callee_srv, int(except_hit_req_nums)))
 
