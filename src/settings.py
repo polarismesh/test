@@ -32,5 +32,10 @@ POLARIS_SERVER_PUSHGATEWAY_ADDR = "{POLARIS_SERVER_ADDR}:9091".format(POLARIS_SE
 
 # tencent kona jdk version, default 11
 # use kona jdk 17 to test spring cloud tencent 2022
-# use kona jdk 11 to test spring cloud tencent 2021/2020/Hoxton/Greenwich
+# use kona jdk 11 to test spring cloud tencent 2021/2020
 POLARIS_TEST_SCT_KONA_JDK_VERSION = 11
+
+# spring cloud tencent version, default 2021
+# use kona jdk 17 to test spring cloud tencent 2022
+# use kona jdk 11 to test spring cloud tencent 2021/2020
+POLARIS_TEST_SCT_EXAMPLE_VERSION = 2021
