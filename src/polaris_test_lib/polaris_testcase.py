@@ -127,7 +127,7 @@ class PolarisTestCase(TestCase):
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
-        cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -name 'TencentKona-%s*' -type d" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
+        cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -name 'TencentKona-%s*' -type d" % (test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
         test_java_home = subprocess.check_output(cmd_pre_deal_0, shell=True, timeout=60,
                                                  stderr=subprocess.STDOUT).decode()
         self.log_info("\n" + test_java_home)
