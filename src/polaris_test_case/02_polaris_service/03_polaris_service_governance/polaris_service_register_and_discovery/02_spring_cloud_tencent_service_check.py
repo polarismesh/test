@@ -109,7 +109,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
 
             # ===========================
             self.start_step("Check register service instance info.")
-            describe_service_instance_url = "http://" + self.polaris_console_addr + PolarisServer.INSTANCE_PATH
+            describe_service_instance_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.INSTANCE_PATH
             rsp = self.polaris_server.describe_service_instance(describe_service_instance_url, limit=10, offset=0,
                                                                 namespace_name="default", service_name=srv)
             instances = rsp.json().get("instances", None)

@@ -49,7 +49,7 @@ class ServiceAliasDeleteCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("Delete error polaris service.")
-        delete_srv_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
+        delete_srv_alias_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
         err_srv_alias_name = self.service_alias_name + "-err"
         delete_srv_alias_req = DeleteServiceAliasRequest(alias_namespace_name=self.alias_namespace_name,
                                                          alias_name=err_srv_alias_name)

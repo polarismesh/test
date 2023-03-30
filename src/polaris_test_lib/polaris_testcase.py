@@ -18,13 +18,13 @@ class PolarisTestCase(TestCase):
 
     def pre_test(self):
         # ===========================
-        self.start_step("Get POLARIS_CONSOLE_ADDR configuration.")
-        POLARIS_CONSOLE_ADDR = settings.get("POLARIS_CONSOLE_ADDR", None)
-        if POLARIS_CONSOLE_ADDR is not None:
-            self.log_info("POLARIS_CONSOLE_ADDR: %s" % POLARIS_CONSOLE_ADDR)
-            self.polaris_console_addr = POLARIS_CONSOLE_ADDR
+        self.start_step("Get POLARIS_SERVER_HTTP_RESTFUL_API_ADDR configuration.")
+        POLARIS_SERVER_HTTP_RESTFUL_API_ADDR = settings.get("POLARIS_SERVER_HTTP_RESTFUL_API_ADDR", None)
+        if POLARIS_SERVER_HTTP_RESTFUL_API_ADDR is not None:
+            self.log_info("POLARIS_SERVER_HTTP_RESTFUL_API_ADDR: %s" % POLARIS_SERVER_HTTP_RESTFUL_API_ADDR)
+            self.polaris_server_http_restful_api_addr = POLARIS_SERVER_HTTP_RESTFUL_API_ADDR
         else:
-            self.fail("Check your config file in [{config_dir}] and set POLARIS_CONSOLE_ADDR in [{config_dir}]."
+            self.fail("Check your config file in [{config_dir}] and set POLARIS_SERVER_HTTP_RESTFUL_API_ADDR in [{config_dir}]."
                       .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
 
     def run_test(self):
@@ -92,7 +92,7 @@ class PolarisTestCase(TestCase):
     def get_console_token(self, username=settings.POLARIS_SERVER_USERNAME, password=settings.POLARIS_SERVER_PASSWORD):
         # ===========================
         self.start_step("Get polaris main user console token.")
-        login_url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH
+        login_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.LOGIN_PATH
         rsp = PolarisServer.get_initial_token(url=login_url, username=username, password=password)
         self.token = rsp.json().get("loginResponse", None).get("token", None)
         self.user_id = rsp.json().get("loginResponse", None).get("user_id", None)
@@ -100,7 +100,7 @@ class PolarisTestCase(TestCase):
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
         self.start_step("Create one regular polaris namespace.")
-        self.create_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.NAMESPACE_PATH
+        self.create_namespace_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.NAMESPACE_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
         self.create_namespace_request = CreateNamespaceRequest(namespace_name=namespace_name,
                                                                comment="Auto test create polaris namespace %s" % now)
@@ -122,7 +122,7 @@ class PolarisTestCase(TestCase):
     def create_single_service(self, polaris_server, service_name, namespace_name="default"):
         # ===========================
         self.start_step("Create one regular polaris service: %s in namespace: %s." % (service_name, namespace_name))
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.create_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
         self.create_service_request = CreateServiceRequest(service_name=service_name, namespace_name=namespace_name,
                                                            owners="polaris",
@@ -149,7 +149,7 @@ class PolarisTestCase(TestCase):
         # ===========================
         self.start_step(
             "Create one regular polaris instance in service: %s, namespace: %s." % (service_name, namespace_name))
-        self.create_service_instance_url = "http://" + self.polaris_console_addr + PolarisServer.INSTANCE_PATH
+        self.create_service_instance_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.INSTANCE_PATH
         host = CommonLib._random_ip()
         port = random.randint(10000, 50000)
         self.create_service_instance_request = CreateServiceInstanceRequest(
@@ -182,7 +182,7 @@ class PolarisTestCase(TestCase):
         self.start_step("Create service alias %s in %s point to service %s in %s." % (
             service_alias_name, alias_namespace_name, service_name, namespace_name))
 
-        self.create_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_ALIAS_PATH
+        self.create_service_alias_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_ALIAS_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
         rsp = polaris_server.create_service_alias(self.create_service_alias_url, service_name, namespace_name,
                                                   service_alias_name, alias_namespace_name,
@@ -207,7 +207,7 @@ class PolarisTestCase(TestCase):
     def clean_test_service_instances(self, polaris_server, namespace_name, service_name, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris service[%s:%s] instances." % (namespace_name, service_name))
-        describe_service_instance_url = "http://" + self.polaris_console_addr + PolarisServer.INSTANCE_PATH
+        describe_service_instance_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.INSTANCE_PATH
 
         now = time.time()
         while time.time() - now < wait_time:
@@ -222,7 +222,7 @@ class PolarisTestCase(TestCase):
             for ins in instances:
                 self.log_info("Delete service instance: %s:%s" % (ins["host"], ins["port"]))
                 delete_instance_requests.append(DeleteServiceInstanceRequest(service_instance_id=ins["id"]))
-            delete_service_instance_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_INSTANCE_PATH
+            delete_service_instance_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_INSTANCE_PATH
             rsp = polaris_server.delete_service_instance(delete_service_instance_url, delete_instance_requests)
             polaris_code = rsp.json().get("code", None)
             if polaris_code != 200000:
@@ -236,7 +236,7 @@ class PolarisTestCase(TestCase):
     def clean_test_service_aliases(self, polaris_server, namespace_name, service_name, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris service[%s:%s] aliases." % (namespace_name, service_name))
-        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+        self.describe_service_alias_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
 
         now = time.time()
         while time.time() - now < wait_time:
@@ -252,7 +252,7 @@ class PolarisTestCase(TestCase):
                 self.log_info("Delete service alias: %s in %s" % (alias["alias"], alias["alias_namespace"]))
                 delete_alias_requests.append(
                     DeleteServiceAliasRequest(alias_namespace_name=alias["alias_namespace"], alias_name=alias["alias"]))
-            delete_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
+            delete_service_alias_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_ALIAS_PATH
             rsp = polaris_server.delete_service_alias(delete_service_alias_url, delete_alias_requests)
             polaris_code = rsp.json().get("code", None)
             if polaris_code != 200000:
@@ -266,7 +266,7 @@ class PolarisTestCase(TestCase):
     def clean_test_services(self, polaris_server, namespace_name=None, service_name=None, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris services.")
-        delete_service_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_PATH
+        delete_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_PATH
         if all([namespace_name, service_name]):
             # ===========================
             self.start_step("Check service instances, delete first.")
@@ -296,7 +296,7 @@ class PolarisTestCase(TestCase):
             namespace_name_str = namespace_name if namespace_name is not None else "all"
             # ===========================
             self.start_step("Delete %s service from %s namespace" % (service_name_str, namespace_name_str))
-            describe_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+            describe_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
             now = time.time()
             while time.time() - now < wait_time:
                 rsp = polaris_server.describe_service(describe_service_url, limit=10, offset=0,
@@ -345,7 +345,7 @@ class PolarisTestCase(TestCase):
     def clean_test_namespaces(self, polaris_server, namespace_names):
         # ===========================
         self.start_step("Clean the test polaris namespaces.")
-        delete_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_NAMESPACE_PATH
+        delete_namespace_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_NAMESPACE_PATH
 
         delete_namespace_requests = []
         if type(namespace_names) != list:
@@ -368,7 +368,7 @@ class PolarisTestCase(TestCase):
         return True
 
     def get_all_namespaces(self, polaris_server, limit=10):
-        self.describe_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.NAMESPACE_PATH
+        self.describe_namespace_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.NAMESPACE_PATH
         rsp = polaris_server.describe_namespace(self.describe_namespace_url, limit=limit, offset=0)
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
@@ -389,7 +389,7 @@ class PolarisTestCase(TestCase):
         return return_namespaces
 
     def get_all_services(self, polaris_server, limit=10, namespace_name="default"):
-        self.describe_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.describe_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         rsp = self.polaris_server.describe_service(url=self.describe_service_url, limit=10, offset=0,
                                                    namespace_name=namespace_name)
         polaris_code = rsp.json().get("code", None)
@@ -412,7 +412,7 @@ class PolarisTestCase(TestCase):
         return return_services
 
     def get_all_service_aliases(self, polaris_server, limit=10):
-        self.describe_service_alias_url = "http://" + self.polaris_console_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
+        self.describe_service_alias_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_SERVICE_ALIAS_PATH
         rsp = polaris_server.describe_service_alias(self.describe_service_alias_url, limit=10, offset=0)
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)

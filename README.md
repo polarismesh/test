@@ -29,7 +29,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
     export PYTHONPATH=${PYTHONPATH}:${polaris_test_dir}
 
-其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/polaris-test
+其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/test
 
 ### 5. 进入src目录下执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
 

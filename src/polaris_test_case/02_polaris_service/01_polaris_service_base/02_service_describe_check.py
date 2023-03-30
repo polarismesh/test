@@ -56,7 +56,7 @@ class ServiceDescribeCheck(PolarisTestCase):
         metadata = {metadata_key: metadata_value}
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
 
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.create_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         self.create_service_request = CreateServiceRequest(service_name=self.service_name,
                                                            namespace_name=self.namespace_name,
                                                            owners="polaris", business=business, department=department,

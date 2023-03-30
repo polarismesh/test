@@ -29,7 +29,7 @@ class ServiceCreateCheck(PolarisTestCase):
         metadata = {"AutoTestMetadataKey": "AutoTestMetadataValue"}
         self.start_step(
             "Create one regular polaris service: %s in namespace: %s." % (self.service_name, self.namespace_name))
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.create_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
         self.create_service_request = CreateServiceRequest(service_name=self.service_name,
                                                            namespace_name=self.namespace_name,
