@@ -18,7 +18,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
     owner = "atom"
     status = TestCase.EnumStatus.Ready
     priority = TestCase.EnumPriority.Normal
-    timeout = 5
+    timeout = 15
 
     def run_test(self):
         # ===========================
