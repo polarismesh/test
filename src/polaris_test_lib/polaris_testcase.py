@@ -75,7 +75,7 @@ class PolarisTestCase(TestCase):
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/kona-jdk"
 
-        cmd_pre_deal_1 = "ls -d %s" % test_resource_dir
+        cmd_pre_deal_1 = "find %s -name 'TencentKona-%s*' -type d" % (test_resource_dir, kona_jdk_version)
 
         output = subprocess.check_output(cmd_pre_deal_1, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
         self.log_info("\n" + output)
