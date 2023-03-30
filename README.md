@@ -27,7 +27,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 ### 4. 指定 Python3执行目录（可选）
 
-    export PYTHONPATH=${PYTHONPATH}:${polaris_test_dir}
+    export PYTHONPATH=$PYTHONPATH:${polaris_test_dir}
 
 其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/test
 

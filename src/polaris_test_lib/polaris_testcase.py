@@ -1,5 +1,6 @@
 import os
 import random
+import subprocess
 import time
 
 from testbase import TestCase
@@ -432,4 +433,45 @@ class PolarisTestCase(TestCase):
             return_service_aliases = rsp.json().get("aliases", None)
         return return_service_aliases
 
+    def req_and_check(self, srv_res_check_map, cmd_req_line, all_req_num, request_interval=1):
+        # srv_res_check_map = {"uniq_check_response1": {"check_srv_name1": check_proportion1}, ...}
+
+        self.log_info("Caller will request: %s times." % all_req_num)
+        # 1. init check map
+        srv_res_times_check_map = {
+            "unknown": 0
+        }
+        srv_res_prop_check_map = {}
+        for check_srv_info in srv_res_check_map.values():
+            check_srv = list(check_srv_info)[0]
+            srv_res_times_check_map.update({check_srv: 0})
+            srv_res_prop_check_map.update(check_srv_info)
+
+        # 2. request and record response hit any service
+        for _ in range(all_req_num):
+            self.log_info("Run request cmd: %s" % cmd_req_line)
+            output = subprocess.check_output(cmd_req_line, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
+            self.log_info("\n" + output)
+
+            for check_response, check_srv_info in srv_res_check_map.items():
+                check_srv = list(check_srv_info)[0]
+                if str(check_response) in output:
+                    self.log_info("Request hit: %s" % check_srv)
+                    srv_res_times_check_map[check_srv] += 1
+                else:
+                    self.log_info("Unknown response.")
+                    srv_res_times_check_map["unknown"] += 1
+
+            time.sleep(request_interval)
+
+        # 3. check response proportion
+        # ===========================
+        self.start_step("Check response proportion.")
+        for callee_srv, real_hit_req_nums in srv_res_times_check_map.items():
+            self.log_info("%s received: %s" % (callee_srv, real_hit_req_nums))
+            except_hit_req_nums = srv_res_prop_check_map[callee_srv] * all_req_num
+            self.log_info("%s except: %s" % (callee_srv, int(except_hit_req_nums)))
+
+            self.assert_("Fail! The deviation of callee-received requests must be less than 10% of the average!",
+                         float(abs(real_hit_req_nums - except_hit_req_nums)) <= float(except_hit_req_nums * 0.1))
 
