@@ -130,7 +130,7 @@ class PolarisTestCase(TestCase):
         cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (
         test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
         test_java_home = subprocess.check_output(cmd_pre_deal_0, shell=True, timeout=60,
-                                                 stderr=subprocess.STDOUT).decode()
+                                                 stderr=subprocess.STDOUT).decode().replace("\n", "")
         self.log_info("\n" + test_java_home)
 
         cmd_pre_deal_1 = "find %s -maxdepth 1 -name 'spring-cloud-tencent' -type d" % test_resource_dir
