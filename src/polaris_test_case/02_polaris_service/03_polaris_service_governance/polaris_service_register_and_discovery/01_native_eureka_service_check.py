@@ -64,7 +64,7 @@ class NativeEurekaServiceCheck(PolarisTestCase):
             else:
                 self.log_info("Exec cmd: %s success!" % cmd_exe)
         # ==================================
-        self.start_step("Wait for service start up...")
+        self.start_step("Wait 30s for service start up...")
         success_list = []
         start = time.time()
         while len(success_list) < 2 and time.time() - start < 60:
@@ -83,6 +83,7 @@ class NativeEurekaServiceCheck(PolarisTestCase):
         if len(success_list) < len(srv_maps):
             raise RuntimeError("Start up failed!")
 
+        time.sleep(30)
         # ===========================
         self.start_step("Check create service from polaris api.")
         return_services = self.get_all_services(self.polaris_server)
