@@ -115,6 +115,43 @@ class PolarisTestCase(TestCase):
         self.token = rsp.json().get("loginResponse", None).get("token", None)
         self.user_id = rsp.json().get("loginResponse", None).get("user_id", None)
 
+    def get_spring_cloud_tencent_example(self, sct_version=settings.POLARIS_TEST_SCT_EXAMPLE_VERSION):
+        # ===========================
+        self.start_step("Check sct example")
+        test_now_dir = os.path.abspath(__file__)
+        self.log_info("Polaris-test now directory: " + test_now_dir)
+
+        relative_dirs = "../.."
+
+        test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
+        self.log_info("Polaris-test root directory: " + test_root_dir)
+        test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
+
+        cmd_pre_deal_1 = "find %s -name 'spring-cloud-tencent' -type d" % test_resource_dir
+
+        output = subprocess.check_output(cmd_pre_deal_1, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
+        self.log_info("\n" + output)
+
+        if "spring-cloud-tencent" not in output:
+            # ===========================
+            self.start_step("Download spring-cloud-tencent %s" % sct_version)
+            cmd_clone = "cd %s && git clone https://github.com/Tencent/spring-cloud-tencent.git -b %s.0" % (test_resource_dir, sct_version)
+
+            if os.system(cmd_clone) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_clone)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_clone)
+
+            # ===========================
+            self.start_step("Unzip kona jdk")
+            jdk_name = "TencentKona-%s*" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
+            cmd_unzip = "cd %s && tar zxvf %s" % (test_resource_dir, jdk_name)
+
+            if os.system(cmd_unzip) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_unzip)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_unzip)
+
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
         self.start_step("Create one regular polaris namespace.")
