@@ -42,3 +42,30 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 #### 若您期望自定义执行用例启动：
 
     python3 manage.py runtest polaris_test_case.polaris_initial_login_check
+
+### 6. 基于 Spring CLoud Tencent 的服务治理相关测试说明
+#### 若您期望执行Spring cloud Tencent相关用例，需要在您的执行机上提前安装好maven环境。我们会在测试时即时编译相关的example包。
+#### 您也可以提前编译好对应的example包上传到对应的测试版本目录下，如：
+
+    .
+    ├── discovery-callee-service-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── discovery-caller-service-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── polaris-circuitbreaker-callee-service-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── polaris-circuitbreaker-callee-service2-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── polaris-circuitbreaker-feign-example-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── polaris-config-example-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── ratelimit-callee-service-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── router-callee-service1-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── router-callee-service2-1.11.0-2020.0.6-SNAPSHOT.jar
+    ├── router-caller-service-1.11.0-2020.0.6-SNAPSHOT.jar
+    └── spring-cloud-tencent 【若检测到当前目录下不包含上述依赖的测试example jar包，polaris-test会即时clone sct然后编译。】
+
+#### 测试所依赖的example包括：
+
+    polaris-discovery-example
+    polaris-config-example
+    polaris-circuitbreaker-example
+    polaris-ratelimit-example
+    polaris-router-example
+
+#### 您可以直接在对应版本的 [SCT DEMO](https://github.com/Tencent/spring-cloud-tencent/tree/2021.0/spring-cloud-tencent-examples) 下编译获得。
