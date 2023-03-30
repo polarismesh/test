@@ -34,7 +34,8 @@ class NativeEurekaServiceCheck(PolarisTestCase):
         self.eureka_consumer_port = random.randint(30000, 50000)
         new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="eureka-demo")
         # ===========================
-        self.get_kona_jdk(new_directory, kona_jdk_version=11)
+        self.get_kona_jdk(kona_jdk_version=11)
+        self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="kona-jdk")
         # ===========================
         self.start_step(
             "Register by native eureka demo"

@@ -63,32 +63,49 @@ class PolarisTestCase(TestCase):
             self.log_info("Exec cmd: %s success!" % cmd_pre_deal_2)
             return new_directory
 
-    def get_kona_jdk(self, new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION):
+    def get_kona_jdk(self, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION):
         # ===========================
-        self.start_step("Download kona jdk")
-        if kona_jdk_version == 11:
-            kona_jdk_url = "https://github.com/Tencent/TencentKona-11/releases/download/kona11.0.17/TencentKona-11.0.17.b1-jdk_linux-x86_64.tar.gz"
-        elif kona_jdk_version == 17:
-            kona_jdk_url = "https://github.com/Tencent/TencentKona-17/releases/download/TencentKona-17.0.5/TencentKona-17.0.5.b1-jdk_linux-x86_64.tar.gz"
-        else:
-            raise RuntimeError("Unknown kona jdk version: %s" % kona_jdk_version)
+        self.start_step("Check kona jdk")
+        test_now_dir = os.path.abspath(__file__)
+        self.log_info("Polaris-test now directory: " + test_now_dir)
 
-        cmd_wget = "cd %s && wget %s" % (new_directory, kona_jdk_url)
+        relative_dirs = "../.."
 
-        if os.system(cmd_wget) != 0:
-            raise RuntimeError("Exec cmd: %s error!" % cmd_wget)
-        else:
-            self.log_info("Exec cmd: %s success!" % cmd_wget)
+        test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
+        self.log_info("Polaris-test root directory: " + test_root_dir)
+        test_resource_dir = test_root_dir + "/polaris_test_resource/kona-jdk"
 
-        # ===========================
-        self.start_step("Unzip kona jdk")
-        jdk_name = "TencentKona-%s*" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
-        cmd_unzip = "cd %s && tar zxvf %s" % (new_directory, jdk_name)
+        cmd_pre_deal_1 = "ls -d %s" % test_resource_dir
 
-        if os.system(cmd_unzip) != 0:
-            raise RuntimeError("Exec cmd: %s error!" % cmd_unzip)
-        else:
-            self.log_info("Exec cmd: %s success!" % cmd_unzip)
+        output = subprocess.check_output(cmd_pre_deal_1, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
+        self.log_info("\n" + output)
+
+        if "TencentKona-%s" % kona_jdk_version not in output:
+            # ===========================
+            self.start_step("Download kona jdk")
+            if kona_jdk_version == 11:
+                kona_jdk_url = "https://github.com/Tencent/TencentKona-11/releases/download/kona11.0.17/TencentKona-11.0.17.b1-jdk_linux-x86_64.tar.gz"
+            elif kona_jdk_version == 17:
+                kona_jdk_url = "https://github.com/Tencent/TencentKona-17/releases/download/TencentKona-17.0.5/TencentKona-17.0.5.b1-jdk_linux-x86_64.tar.gz"
+            else:
+                raise RuntimeError("Unknown kona jdk version: %s" % kona_jdk_version)
+
+            cmd_wget = "cd %s && wget %s" % (test_resource_dir, kona_jdk_url)
+
+            if os.system(cmd_wget) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_wget)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_wget)
+
+            # ===========================
+            self.start_step("Unzip kona jdk")
+            jdk_name = "TencentKona-%s*" % settings.POLARIS_TEST_SCT_KONA_JDK_VERSION
+            cmd_unzip = "cd %s && tar zxvf %s" % (test_resource_dir, jdk_name)
+
+            if os.system(cmd_unzip) != 0:
+                raise RuntimeError("Exec cmd: %s error!" % cmd_unzip)
+            else:
+                self.log_info("Exec cmd: %s success!" % cmd_unzip)
 
     def get_console_token(self, username=settings.POLARIS_SERVER_USERNAME, password=settings.POLARIS_SERVER_PASSWORD):
         # ===========================
