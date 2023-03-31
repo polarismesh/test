@@ -41,16 +41,19 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             "[https://github.com/Tencent/spring-cloud-tencent/tree/{version}/spring-cloud-tencent-examples/polaris-discovery-example].")
         reg_ip = settings.POLARIS_SERVER_ADDR
         srv_maps = {
-            "discovery-caller-service": [
+            "DiscoveryCallerService": [
                 {"srv_port": self.discovery_caller_port,
-                 "srv_region_info": "south-china:ap-guangzhou:ap-guangzhou-1"}
+                 "srv_region_info": "south-china:ap-guangzhou:ap-guangzhou-1",
+                 "jar_name": "discovery-caller-service"}
             ],
             # callee 与 caller 不处于就近地域
-            "discovery-callee-service": [
+            "DiscoveryCalleeService": [
                 {"srv_port": self.discovery_callee1_port,
-                 "srv_region_info": "east-china:ap-shanghai:ap-shanghai-2"},
+                 "srv_region_info": "east-china:ap-shanghai:ap-shanghai-2",
+                 "jar-name": "discovery-callee-service"},
                 {"srv_port": self.discovery_callee2_port,
-                 "srv_region_info": "north-china:ap-beijing:ap-beijing-3"}
+                 "srv_region_info": "north-china:ap-beijing:ap-beijing-3",
+                 "jar_name": "discovery-callee-service"}
             ]
         }
 
@@ -59,6 +62,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             for _srv in srv_info:
                 _region_info = _srv["srv_region_info"].split(":")
                 _srv_port = _srv["srv_port"]
+                _srv_jar_name = _srv["jar_name"]
                 date_now = time.strftime("%Y%m%d%H%M", time.localtime(int(time.time())))
                 cmd_exe = "export SCT_METADATA_ZONE={zone} && " \
                           "export SCT_METADATA_REGION={region} && " \
@@ -70,11 +74,11 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                           "-Dspring.cloud.polaris.stat.pushgateway.address={polaris_ip}:9091 " \
                           "-Dspring.cloud.polaris.address=grpc://{polaris_ip}:8091 " \
                           "-Dserver.port={srv_port} " \
-                          "-jar {srv_name}*.jar " \
-                          ">{srv_name}.{srv_port}.{date}.log 2>&1 &".format(
+                          "-jar {jar_name}*.jar " \
+                          ">{jar_name}.{srv_port}.{date}.log 2>&1 &".format(
                     zone=_region_info[0], region=_region_info[1], campus=_region_info[2],
                     temp_dir=new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION,
-                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, date=date_now
+                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, jar_name=_srv_jar_name, date=date_now
                 )
                 if os.system(cmd_exe) != 0:
                     raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
@@ -127,11 +131,10 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         # ===========================
         self.start_step("Request sct consumer to check provider discovery and sct feign invoke.")
 
-        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/feign'" % self.discovery_caller_port
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/feign?value1=1&value2=3'" % self.discovery_caller_port
         self.req_and_check(
-            srv_res_check_map={self.discovery_callee1_port: {"discovery_callee1": 0.5},
-                               self.discovery_callee2_port: {"discovery_callee2": 0.5}},
-            cmd_req_line=cmd_curl, all_req_num=30
+            srv_res_check_map={4: {"discovery_callee": 1}},
+            cmd_req_line=cmd_curl, all_req_num=5
         )
         # ===========================
         self.start_step("Request sct consumer to check provider discovery and sct rest invoke.")
