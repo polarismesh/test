@@ -105,8 +105,8 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             self.start_step("Check create service %s." % srv)
             return_services = self.get_all_services(self.polaris_server)
             return_service_names = [srv["name"] for srv in return_services]
-
-            self.assert_("Fail! No return except polaris service.", {srv}.issubset({return_service_names}))
+            self.log_info(str(return_service_names))
+            self.assert_("Fail! No return except polaris service.", srv in return_service_names)
 
             # ===========================
             self.start_step("Check register service instance info.")
