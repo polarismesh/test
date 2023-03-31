@@ -1,5 +1,6 @@
 import os
 import random
+import signal
 import subprocess
 import time
 from threading import Timer
@@ -66,7 +67,10 @@ class PolarisTestCase(TestCase):
             return new_directory
 
     def execute_shell(self, command, timeout):
-        p = subprocess.Popen([command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        def pre_exec_function():
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+        p = subprocess.Popen([command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=pre_exec_function)
 
         self.log_info("Run: %s" % command)
         timer = Timer(timeout, p.kill)
