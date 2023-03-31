@@ -125,9 +125,18 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                                      ins_location == _srv_info["srv_region_info"])
 
         # ===========================
-        self.start_step("Request sct consumer to check provider discovery.")
+        self.start_step("Request sct consumer to check provider discovery and sct feign invoke.")
 
-        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/callee/info'" % self.discovery_caller_port
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/feign'" % self.discovery_caller_port
+        self.req_and_check(
+            srv_res_check_map={self.discovery_callee1_port: {"discovery_callee1": 0.5},
+                               self.discovery_callee2_port: {"discovery_callee2": 0.5}},
+            cmd_req_line=cmd_curl, all_req_num=30
+        )
+        # ===========================
+        self.start_step("Request sct consumer to check provider discovery and sct rest invoke.")
+
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/rest'" % self.discovery_caller_port
         self.req_and_check(
             srv_res_check_map={self.discovery_callee1_port: {"discovery_callee1": 0.5},
                                self.discovery_callee2_port: {"discovery_callee2": 0.5}},
