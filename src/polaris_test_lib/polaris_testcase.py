@@ -159,10 +159,7 @@ class PolarisTestCase(TestCase):
             self.start_step("Maven build spring-cloud-tencent example")
             self.start_step("Update maven")
             cmd_pre_deal_3 = "yum install maven -y"
-            if os.system(cmd_pre_deal_3) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_3)
-            else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_3)
+            subprocess.check_output(cmd_pre_deal_3, shell=True, timeout=120, stderr=subprocess.STDOUT).decode().replace("\n", "")
             # ===========================
             self.start_step("Start maven install")
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype -Dmaven.test.skip=true" % (
