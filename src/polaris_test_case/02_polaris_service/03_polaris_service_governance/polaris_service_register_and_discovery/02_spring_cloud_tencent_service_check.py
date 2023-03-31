@@ -154,5 +154,5 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             os.system(cmd_kill)
         # ===========================
         self.start_step("Clean all discovery services")
-        self.clean_test_services(self.polaris_server, service_name="discovery-caller-service")
-        self.clean_test_services(self.polaris_server, service_name="discovery-callee-service")
+        self.clean_test_services(self.polaris_server, service_name="DiscoveryCallerService")
+        self.clean_test_services(self.polaris_server, service_name="DiscoveryCalleeService")
