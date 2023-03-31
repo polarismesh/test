@@ -49,10 +49,10 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             # callee 与 caller 不处于就近地域
             "DiscoveryCalleeService": [
                 {"srv_port": self.discovery_callee1_port,
-                 "srv_region_info": "east-china:ap-shanghai:ap-shanghai-2",
+                 "srv_region_info": "shanghai-zone-1:ap-shanghai:ap-shanghai-2",
                  "jar_name": "discovery-callee-service"},
                 {"srv_port": self.discovery_callee2_port,
-                 "srv_region_info": "north-china:ap-beijing:ap-beijing-3",
+                 "srv_region_info": "shanghai-zone-1:ap-beijing:ap-beijing-3",
                  "jar_name": "discovery-callee-service"}
             ]
         }
