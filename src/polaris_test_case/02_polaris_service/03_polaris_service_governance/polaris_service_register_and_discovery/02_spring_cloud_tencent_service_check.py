@@ -81,7 +81,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                 else:
                     self.log_info("Exec cmd: %s success!" % cmd_exe)
         # ==================================
-        self.start_step("Wait for service start up...")
+        self.start_step("Wait 60s for service start up...")
         success_list = []
         start = time.time()
         while len(success_list) < 3 and time.time() - start < 60:
@@ -99,7 +99,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
 
         if len(success_list) < 3:
             raise RuntimeError("Start up failed!")
-
+        time.sleep(60)
         # ===========================
         for srv, srv_info in srv_maps.items():
             self.start_step("Check create service %s." % srv)
