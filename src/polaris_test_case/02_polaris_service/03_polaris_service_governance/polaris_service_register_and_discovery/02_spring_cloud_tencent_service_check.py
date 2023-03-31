@@ -74,11 +74,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                     temp_dir=new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION,
                     polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, date=date_now
                 )
-
-                if os.system(cmd_exe) != 0:
-                    raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
-                else:
-                    self.log_info("Exec cmd: %s success!" % cmd_exe)
+                self.execute_shell(cmd_exe, timeout=30)
         # ==================================
         self.start_step("Wait for service start up...")
         success_list = []
@@ -138,7 +134,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         self.start_step("Stop all discovery services")
         for p in [self.discovery_caller_port, self.discovery_callee1_port, self.discovery_callee2_port]:
             cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
-            os.system(cmd_kill)
+            self.execute_shell(cmd_kill, timeout=30)
         # ===========================
         self.start_step("Clean all discovery services")
         self.clean_test_services(self.polaris_server, service_name="discovery-caller-service")
