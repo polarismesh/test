@@ -2,6 +2,7 @@ import os
 import random
 import subprocess
 import time
+from threading import Timer
 
 from testbase import TestCase
 from testbase.conf import settings
@@ -64,6 +65,26 @@ class PolarisTestCase(TestCase):
             self.log_info("Exec cmd: %s success!" % cmd_pre_deal_2)
             return new_directory
 
+    def execute_shell(self, command, timeout):
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        self.log_info("Run: %s" % command)
+        timer = Timer(timeout, p.kill)
+
+        try:
+            timer.start()
+            stdout, stderr = p.communicate()
+            return_code = p.returncode
+            self.log_info("Return_code: %s" % return_code)
+            self.log_info("Stdout: %s" % stdout)
+            self.log_info("Stderr: %s" % stderr)
+
+            return stdout.decode(), stderr.decode()
+        except Exception as ex:
+            self.log_info("ex: %s" % ex)
+        finally:
+            timer.cancel()
+
     def get_kona_jdk(self, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION):
         # ===========================
         self.start_step("Check kona jdk")
@@ -77,11 +98,9 @@ class PolarisTestCase(TestCase):
         test_resource_dir = test_root_dir + "/polaris_test_resource/kona-jdk"
 
         cmd_pre_deal_1 = "find %s -maxdepth 1 -name 'TencentKona-%s*' -type d" % (test_resource_dir, kona_jdk_version)
+        stdout, stderr = self.execute_shell(cmd_pre_deal_1, timeout=60)
 
-        output = subprocess.check_output(cmd_pre_deal_1, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
-        self.log_info("\n" + output)
-
-        if "TencentKona-%s" % kona_jdk_version not in output:
+        if "TencentKona-%s" % kona_jdk_version not in stdout:
             # ===========================
             self.start_step("Download kona jdk")
             if kona_jdk_version == 11:
@@ -129,16 +148,13 @@ class PolarisTestCase(TestCase):
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
         cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (
         test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
-        test_java_home = subprocess.check_output(cmd_pre_deal_0, shell=True, timeout=60,
-                                                 stderr=subprocess.STDOUT).decode().replace("\n", "")
-        self.log_info("\n" + test_java_home)
-
+        test_java_home, stderr = self.execute_shell(cmd_pre_deal_0, timeout=60)
+        test_java_home = test_java_home.replace("\n", "")
         cmd_pre_deal_1 = "find %s -maxdepth 1 -name 'spring-cloud-tencent' -type d" % test_resource_dir
 
-        output = subprocess.check_output(cmd_pre_deal_1, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
-        self.log_info("\n" + output)
+        stdout, stderr = self.execute_shell(cmd_pre_deal_1, timeout=60)
 
-        if "spring-cloud-tencent" not in output:
+        if "spring-cloud-tencent" not in stdout:
             # ===========================
             self.start_step("Download spring-cloud-tencent %s" % sct_version)
             cmd_clone = "cd %s && git clone https://github.com/Tencent/spring-cloud-tencent.git -b %s.0" % (
@@ -151,25 +167,25 @@ class PolarisTestCase(TestCase):
 
         cmd_pre_deal_2 = "find %s -maxdepth 1 -name '*.jar' -type f" % test_resource_dir
 
-        output = subprocess.check_output(cmd_pre_deal_2, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
-        self.log_info("\n" + output)
+        stdout, stderr = self.execute_shell(cmd_pre_deal_2, timeout=60)
 
-        if "jar" not in output:
+        if "jar" not in stdout:
             # ===========================
             self.start_step("Maven build spring-cloud-tencent example")
             self.start_step("Update maven")
             cmd_pre_deal_3 = "yum install maven -y"
-            subprocess.check_output(cmd_pre_deal_3, shell=True, timeout=120, stderr=subprocess.STDOUT).decode().replace("\n", "")
+            self.execute_shell(cmd_pre_deal_3, timeout=120)
             # ===========================
             self.start_step("Start maven install")
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype -Dmaven.test.skip=true" % (
                 test_java_home, test_resource_dir)
-            subprocess.check_output(cmd_pre_deal_4, shell=True, timeout=360, stderr=subprocess.STDOUT).decode().replace("\n", "")
+
+            self.execute_shell(cmd_pre_deal_4, timeout=360)
             # ===========================
             self.start_step("Copy example to ./")
             cmd_pre_deal_5 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
                 test_resource_dir, test_resource_dir)
-            subprocess.check_output(cmd_pre_deal_5, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
+            self.execute_shell(cmd_pre_deal_5, timeout=60)
 
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
