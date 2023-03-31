@@ -67,10 +67,7 @@ class PolarisTestCase(TestCase):
             return new_directory
 
     def execute_shell(self, command, timeout):
-        def pre_exec_function():
-            signal.signal(signal.SIGINT, signal.SIG_IGN)
-
-        p = subprocess.Popen([command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=pre_exec_function)
+        p = subprocess.Popen([command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
         self.log_info("Run: %s" % command)
         timer = Timer(timeout, p.kill)

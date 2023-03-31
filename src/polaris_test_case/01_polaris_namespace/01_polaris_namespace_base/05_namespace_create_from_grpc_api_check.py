@@ -1,3 +1,4 @@
+import os
 import random
 import string
 import subprocess
@@ -39,7 +40,10 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
         cmd_exe = "cd %s && chmod 777 provider && sed -i 's/ipaddr/%s/g' polaris.yaml && " \
                   "nohup ./provider -service=%s -namespace=%s -auto_shutdown=true &" % \
                   (new_directory, reg_ip, self.service_name, self.namespace_name)
-        self.execute_shell(cmd_exe, timeout=30)
+        if os.system(cmd_exe) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_exe)
 
         # ===========================
         self.start_step("Check create namespace.")
