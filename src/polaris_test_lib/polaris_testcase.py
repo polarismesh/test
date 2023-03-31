@@ -76,8 +76,8 @@ class PolarisTestCase(TestCase):
             stdout, stderr = p.communicate()
             return_code = p.returncode
             self.log_info("Return_code: %s" % return_code)
-            self.log_info("Stdout: %s" % stdout)
-            self.log_info("Stderr: %s" % stderr)
+            self.log_info("Stdout: %s" % stdout.decode())
+            self.log_info("Stderr: %s" % stderr.decode())
 
             return stdout.decode(), stderr.decode()
         except Exception as ex:
@@ -146,12 +146,13 @@ class PolarisTestCase(TestCase):
         test_root_dir = os.path.abspath(os.path.join(test_now_dir, relative_dirs))
         self.log_info("Polaris-test root directory: " + test_root_dir)
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
+
         cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (
         test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
         test_java_home, stderr = self.execute_shell(cmd_pre_deal_0, timeout=60)
         test_java_home = test_java_home.replace("\n", "")
-        cmd_pre_deal_1 = "find %s -maxdepth 1 -name 'spring-cloud-tencent' -type d" % test_resource_dir
 
+        cmd_pre_deal_1 = "find %s -maxdepth 1 -name 'spring-cloud-tencent' -type d" % test_resource_dir
         stdout, stderr = self.execute_shell(cmd_pre_deal_1, timeout=60)
 
         if "spring-cloud-tencent" not in stdout:
@@ -166,7 +167,6 @@ class PolarisTestCase(TestCase):
                 self.log_info("Exec cmd: %s success!" % cmd_clone)
 
         cmd_pre_deal_2 = "find %s -maxdepth 1 -name '*.jar' -type f" % test_resource_dir
-
         stdout, stderr = self.execute_shell(cmd_pre_deal_2, timeout=60)
 
         if "jar" not in stdout:
@@ -540,12 +540,11 @@ class PolarisTestCase(TestCase):
         # 2. request and record response hit any service
         for _ in range(all_req_num):
             self.log_info("Run request cmd: %s" % cmd_req_line)
-            output = subprocess.check_output(cmd_req_line, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
-            self.log_info("\n" + output)
+            stdout, stderr = self.execute_shell(cmd_req_line, timeout=60)
 
             for check_response, check_srv_info in srv_res_check_map.items():
                 check_srv = list(check_srv_info)[0]
-                if str(check_response) in output:
+                if str(check_response) in stdout:
                     self.log_info("Request hit: %s" % check_srv)
                     srv_res_times_check_map[check_srv] += 1
                 else:
