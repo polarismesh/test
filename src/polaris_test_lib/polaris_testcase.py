@@ -540,17 +540,19 @@ class PolarisTestCase(TestCase):
 
         # 2. request and record response hit any service
         for _ in range(all_req_num):
-            self.log_info("Run request cmd: %s" % cmd_req_line)
             stdout, stderr = self.execute_shell(cmd_req_line, timeout=60)
-
+            hit = False
             for check_response, check_srv_info in srv_res_check_map.items():
                 check_srv = list(check_srv_info)[0]
                 if str(check_response) in stdout:
                     self.log_info("Request hit: %s" % check_srv)
                     srv_res_times_check_map[check_srv] += 1
-                else:
-                    self.log_info("Unknown response.")
-                    srv_res_times_check_map["unknown"] += 1
+                    hit = True
+                    break
+            if not hit:
+                self.log_info("Unknown response.")
+                srv_res_times_check_map["unknown"] += 1
+                break
 
             time.sleep(request_interval)
 
