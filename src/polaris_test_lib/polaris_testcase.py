@@ -167,15 +167,12 @@ class PolarisTestCase(TestCase):
             self.start_step("Start maven install")
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype -Dmaven.test.skip=true" % (
                 test_java_home, test_resource_dir)
-            if os.system(cmd_pre_deal_4) != 0:
-                raise RuntimeError("Exec cmd: %s error!" % cmd_pre_deal_4)
-            else:
-                self.log_info("Exec cmd: %s success!" % cmd_pre_deal_4)
+            subprocess.check_output(cmd_pre_deal_4, shell=True, timeout=360, stderr=subprocess.STDOUT).decode().replace("\n", "")
             # ===========================
             self.start_step("Copy example to ./")
             cmd_pre_deal_5 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
                 test_resource_dir, test_resource_dir)
-            subprocess.check_output(cmd_pre_deal_5, shell=True, timeout=360, stderr=subprocess.STDOUT).decode()
+            subprocess.check_output(cmd_pre_deal_5, shell=True, timeout=60, stderr=subprocess.STDOUT).decode()
 
     def create_single_namespace(self, polaris_server, namespace_name=None):
         # ===========================
