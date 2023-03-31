@@ -50,7 +50,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
             "DiscoveryCalleeService": [
                 {"srv_port": self.discovery_callee1_port,
                  "srv_region_info": "east-china:ap-shanghai:ap-shanghai-2",
-                 "jar-name": "discovery-callee-service"},
+                 "jar_name": "discovery-callee-service"},
                 {"srv_port": self.discovery_callee2_port,
                  "srv_region_info": "north-china:ap-beijing:ap-beijing-3",
                  "jar_name": "discovery-callee-service"}
