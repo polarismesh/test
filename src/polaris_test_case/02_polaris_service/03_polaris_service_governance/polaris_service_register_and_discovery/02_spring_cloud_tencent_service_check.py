@@ -64,7 +64,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
                           "export SCT_METADATA_REGION={region} && " \
                           "export SCT_METADATA_CAMPUS={campus} && " \
                           "cd {temp_dir} && nohup TencentKona-{kona_jdk_version}*/bin/java " \
-                          "-Dspring.application.name={srv_name}" \
+                          "-Dspring.application.name={srv_name} " \
                           "-Dspring.cloud.polaris.stat.enabled=true " \
                           "-Dspring.cloud.polaris.stat.pushgateway.enabled=true " \
                           "-Dspring.cloud.polaris.stat.pushgateway.address={polaris_ip}:9091 " \
