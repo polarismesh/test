@@ -39,7 +39,7 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         self.start_step(
             "Register by spring cloud tencent demo: discovery-callee/caller"
             "[https://github.com/Tencent/spring-cloud-tencent/tree/{version}/spring-cloud-tencent-examples/polaris-discovery-example].")
-        reg_ip = settings.POLARIS_SERVER_GRPC_SERVICE_ADDR
+        reg_ip = settings.POLARIS_SERVER_ADDR
         srv_maps = {
             "discovery-caller-service": [
                 {"srv_port": self.discovery_caller_port,
