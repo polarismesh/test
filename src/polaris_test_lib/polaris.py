@@ -205,8 +205,12 @@ class PolarisServer(CommonLib):
         rsp = self.post(url, json=[req], headers=self.headers)
         return rsp
 
-    def describe_service_ratelimit_rule(self, url, limit, offset, brief=None, ratelimit_rule_id=None):
-        req = self._format_params(limit=limit, offset=offset, brief=brief, id=ratelimit_rule_id)
+    def describe_service_ratelimit_rule(self, url, limit, offset, brief=None, ratelimit_rule_id=None,
+                                        ratelimit_rule_name=None, ratelimit_rule_disable=None,
+                                        namespace_name=None, service_name=None):
+        req = self._format_params(limit=limit, offset=offset, brief=brief, id=ratelimit_rule_id,
+                                  name=ratelimit_rule_name, disable=ratelimit_rule_disable, namespace=namespace_name,
+                                  service=service_name)
         rsp = self.get(url, params=req, headers=self.headers)
         return rsp
 

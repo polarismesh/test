@@ -40,7 +40,7 @@ class ServiceRatelimitCreateCheck(PolarisTestCase):
         srv_ratelimit_rule_failover = "FAILOVER_LOCAL"
         srv_ratelimit_rule_type = "LOCAL"
         rsp = self.polaris_server.create_service_ratelimit_rule(
-            self.create_service_ratelimit_rule_url, self.ratelimit_rule_name, rule_type="LOCAL",
+            self.create_service_ratelimit_rule_url, self.ratelimit_rule_name, rule_type=srv_ratelimit_rule_type,
             ratelimit_namespace=self.namespace_name, ratelimit_service=self.service_name,
             ratelimit_method={"value": "AutoTestPolarisRatelimitMethod", "type": "EXACT"},
             ratelimit_arguments=[{"type": "CUSTOM",
@@ -78,7 +78,8 @@ class ServiceRatelimitCreateCheck(PolarisTestCase):
             self.log_info("Success to check return service ratelimit rule and polaris code!")
 
     def post_test(self):
-        self.clean_test_services(self.polaris_server, namespace_name=self.namespace_name, service_name=self.service_name)
+        self.clean_test_namespaces(self.polaris_server, [self.namespace_name])
+
 
 if __name__ == '__main__':
     ServiceRatelimitCreateCheck().debug_run()

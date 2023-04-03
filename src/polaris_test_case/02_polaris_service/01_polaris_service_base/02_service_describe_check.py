@@ -27,7 +27,7 @@ class ServiceDescribeCheck(PolarisTestCase):
         return_service_size = rsp.json().get("size", None)
 
         self.assert_("Fail! No return except polaris code.", polaris_code == check_polaris_code)
-        self.assert_("Fail! No return except polaris amount.", return_service_total == check_total)
+        self.assert_("Fail! No return except polaris service amount.", return_service_total == check_total)
         self.assert_("Fail! No return except polaris service size.", return_service_size == check_size)
 
         return_services = rsp.json().get("services", None)

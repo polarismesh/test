@@ -1,3 +1,4 @@
+from testbase.conf import settings
 from testbase.datadrive import DataDrive
 
 from src.polaris_test_lib.polaris import PolarisServer
@@ -6,8 +7,8 @@ from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 @DataDrive({
     "Regular": {
-        "username": "polaris",
-        "password": "polaris",
+        "username": settings.POLARIS_SERVER_USERNAME,
+        "password": settings.POLARIS_SERVER_PASSWORD,
         "case_desc": "Using correct username and password to get token."
     },
     "irregular": {

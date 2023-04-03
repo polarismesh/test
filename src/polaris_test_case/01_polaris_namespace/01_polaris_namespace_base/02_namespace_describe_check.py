@@ -24,7 +24,7 @@ class NamespaceDescribeCheck(PolarisTestCase):
         return_namespace_size = rsp.json().get("size", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == check_polaris_code)
         if check_total != -1:
-            self.assert_("Fail! No return except polaris amount.", return_namespace_total == check_total)
+            self.assert_("Fail! No return except polaris namespaces amount.", return_namespace_total == check_total)
         self.assert_("Fail! No return except polaris namespaces size.", return_namespace_size == check_size)
 
         return_namespaces = rsp.json().get("namespaces", None)
