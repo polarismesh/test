@@ -1,5 +1,6 @@
 import requests
 from testbase import logger
+from testbase.conf import settings
 
 from src.polaris_test_lib.common_lib import CommonLib
 
@@ -68,7 +69,7 @@ class PolarisServer(CommonLib):
         return rsp
 
     @classmethod
-    def get_initial_token(cls, url, username, password, owner="polaris"):
+    def get_initial_token(cls, url, username, password, owner=settings.POLARIS_SERVER_TOKEN_OWNER):
         req = cls._format_params(name=username, password=password, owner=owner)
         rsp = cls.post(url, json=req)
         return rsp
