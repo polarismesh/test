@@ -34,7 +34,8 @@ class PolarisInitialLoginCheck(PolarisTestCase):
         # ===========================
         self.start_step(self.casedata["case_desc"])
         rsp = PolarisServer.get_initial_token(url=url, username=self.casedata["username"],
-                                              password=self.casedata["password"])
+                                              password=self.casedata["password"],
+                                              owner=self.casedata["username"])
         login_resp = rsp.json().get("loginResponse", None)
         polaris_code = rsp.json().get("code", None)
         # ===========================
