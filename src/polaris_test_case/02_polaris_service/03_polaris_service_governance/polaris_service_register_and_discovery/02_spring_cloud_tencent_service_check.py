@@ -33,8 +33,10 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         self.get_kona_jdk()
         self.get_spring_cloud_tencent_example()
         new_directory = self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="kona-jdk")
-        self.create_temp_test_directory(temp_dir_suffix=_random_str, resource_name="spring-cloud-tencent-demo/%s" % settings.POLARIS_TEST_SCT_EXAMPLE_VERSION,
-                                        file_name="discovery-*.jar")
+        self.create_temp_test_directory(
+            temp_dir_suffix=_random_str,
+            resource_name="spring-cloud-tencent-demo/%s" % settings.POLARIS_TEST_SCT_EXAMPLE_VERSION,
+            file_name="discovery-*.jar")
         # ===========================
         self.start_step(
             "Register by spring cloud tencent demo: discovery-callee/caller"

@@ -24,7 +24,6 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 配置文件中已为您默认指定了 polaris_test_case.polaris_initial_login_check 基础测试用例，用于检查初始密码登录。
 
-
 ### 4. 指定 Python3执行目录（可选）
 
     export PYTHONPATH=$PYTHONPATH:`pwd`;echo $PYTHONPATH
@@ -32,7 +31,6 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/test
 
 ### 5. 执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
-
 
 #### 若您期望自定义执行用例启动：
 
@@ -42,11 +40,12 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
     python3 manage.py runtest --config-file runtest_config.json
 
-
 ### 6. 基于 Spring CLoud Tencent 的服务治理相关测试说明
+
 #### 若您期望执行Spring cloud Tencent相关用例，polaris-test需要在您的执行机上自动安装maven，并在测试时即时编译相关的example包。
+
 #### 您也可以预先编译好对应jar包存放至对应版本目录下，如下所示：
-    
+
     .spring-cloud-tencent-demo
         ├── 2020
         ├── 2021

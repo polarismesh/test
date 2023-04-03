@@ -1,6 +1,5 @@
 import os
 import random
-import signal
 import subprocess
 import time
 from threading import Timer
@@ -149,7 +148,7 @@ class PolarisTestCase(TestCase):
         test_resource_dir = test_root_dir + "/polaris_test_resource/spring-cloud-tencent-demo/%s" % sct_version
 
         cmd_pre_deal_0 = "find %s/polaris_test_resource/kona-jdk -maxdepth 1 -name 'TencentKona-%s*' -type d" % (
-        test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
+            test_root_dir, settings.POLARIS_TEST_SCT_KONA_JDK_VERSION)
         test_java_home, stderr = self.execute_shell(cmd_pre_deal_0, timeout=60)
         test_java_home = test_java_home.replace("\n", "")
 

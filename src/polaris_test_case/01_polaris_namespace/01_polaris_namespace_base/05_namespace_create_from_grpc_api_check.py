@@ -1,7 +1,6 @@
 import os
 import random
 import string
-import subprocess
 
 from testbase.conf import settings
 from testbase.testcase import TestCase
