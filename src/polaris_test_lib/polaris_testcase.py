@@ -353,6 +353,35 @@ class PolarisTestCase(TestCase):
             self.fail("Fail! Delete service alias time out.")
             return False
 
+    def clean_test_service_ratelimit_rule(self, polaris_server, namespace_name, service_name, wait_time=300):
+        # ===========================
+        self.start_step("Clean the test polaris service[%s:%s] ratelimit rules." % (namespace_name, service_name))
+        self.describe_service_ratelimit_rule_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_RATELIMIT_PATH
+
+        now = time.time()
+        while time.time() - now < wait_time:
+            rsp = self.polaris_server.describe_service_ratelimit_rule(self.describe_service_ratelimit_rule_url,
+                                                                      limit=10, offset=0)
+            ratelimit_rules = rsp.json().get("rateLimits", None)
+            if len(ratelimit_rules) == 0:
+                self.log_info("Delete service ratelimit rules finish.")
+                return True
+
+            delete_service_ratelimit_rule_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_RATELIMIT_PATH
+            for ratelimit_rule in ratelimit_rules:
+                self.log_info("Delete service ratelimit_rule: %s:%s in %s:%s" % (
+                ratelimit_rule["name"], ratelimit_rule["id"], ratelimit_rule["service"], ratelimit_rule["namespace"]))
+                rsp = polaris_server.delete_service_ratelimit_rule(delete_service_ratelimit_rule_url,
+                                                                   rule_id=ratelimit_rule["id"])
+            polaris_code = rsp.json().get("code", None)
+            if polaris_code != 200000:
+                self.fail("Fail! No return except polaris code.")
+                return False
+            time.sleep(1)
+        else:
+            self.fail("Fail! Delete service ratelimit rule time out.")
+            return False
+
     def clean_test_services(self, polaris_server, namespace_name=None, service_name=None, wait_time=300):
         # ===========================
         self.start_step("Clean the test polaris services.")
@@ -371,6 +400,13 @@ class PolarisTestCase(TestCase):
                                                       service_name=service_name)
             if not success:
                 self.fail("Fail to delete service: %s aliases." % service_name)
+                return False
+            # ===========================
+            self.start_step("Check service ratelimit rules, delete.")
+            success = self.clean_test_service_ratelimit_rule(polaris_server, namespace_name=namespace_name,
+                                                             service_name=service_name)
+            if not success:
+                self.fail("Fail to delete service: %s ratelimit rules." % service_name)
                 return False
             # ===========================
             self.start_step("Delete service: %s from namespace: %s" % (service_name, namespace_name))
@@ -414,6 +450,14 @@ class PolarisTestCase(TestCase):
                                                               service_name=srv["name"])
                     if not success:
                         self.fail("Fail to delete service: %s aliases." % srv["name"])
+                        return False
+
+                    # ===========================
+                    self.start_step("Check service ratelimit rules, delete.")
+                    success = self.clean_test_service_ratelimit_rule(polaris_server, namespace_name=srv["namespace"],
+                                                                     service_name=srv["name"])
+                    if not success:
+                        self.fail("Fail to delete service: %s ratelimit rules." % srv["name"])
                         return False
 
                     delete_service_req = DeleteServiceRequest(namespace_name=srv["namespace"], service_name=srv["name"])

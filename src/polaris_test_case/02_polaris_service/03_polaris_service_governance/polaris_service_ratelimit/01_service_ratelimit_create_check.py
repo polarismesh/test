@@ -77,6 +77,8 @@ class ServiceRatelimitCreateCheck(PolarisTestCase):
         if self.test_result.passed:
             self.log_info("Success to check return service ratelimit rule and polaris code!")
 
+    def post_test(self):
+        self.clean_test_services(self.polaris_server, namespace_name=self.namespace_name, service_name=self.service_name)
 
 if __name__ == '__main__':
     ServiceRatelimitCreateCheck().debug_run()
