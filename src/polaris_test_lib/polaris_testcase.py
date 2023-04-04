@@ -181,7 +181,7 @@ class PolarisTestCase(TestCase):
             cmd_pre_deal_4 = "export JAVA_HOME=%s && cd %s/spring-cloud-tencent && mvn clean install -B -U -Psonatype -Dmaven.test.skip=true" % (
                 test_java_home, test_resource_dir)
 
-            self.execute_shell(cmd_pre_deal_4, timeout=360)
+            self.execute_shell(cmd_pre_deal_4, timeout=600)
             # ===========================
             self.start_step("Copy example to ./")
             cmd_pre_deal_5 = "cd %s && find spring-cloud-tencent/spring-cloud-tencent-examples -name '*.jar' -type f -size +30M|xargs -I {} cp {} %s" % (
