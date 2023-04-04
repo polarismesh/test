@@ -20,6 +20,9 @@ class PolarisServer(CommonLib):
     DESCRIBE_SERVICE_ALIAS_PATH = '/naming/v1/service/aliases'
     DELETE_SERVICE_ALIAS_PATH = DESCRIBE_SERVICE_ALIAS_PATH + '/delete'
 
+    SERVICE_RATELIMIT_PATH = "/naming/v1/ratelimits"
+    DELETE_SERVICE_RATELIMIT_PATH = SERVICE_RATELIMIT_PATH + '/delete'
+
     EUREKA_REGISTER_PATH = "/eureka/apps"
 
     def __init__(self, auth_token, auth_user_id):
@@ -65,7 +68,7 @@ class PolarisServer(CommonLib):
         return rsp
 
     @classmethod
-    def get_initial_token(cls, url, username, password, owner="polaris"):
+    def get_initial_token(cls, url, username, password, owner):
         req = cls._format_params(name=username, password=password, owner=owner)
         rsp = cls.post(url, json=req)
         return rsp
@@ -189,4 +192,40 @@ class PolarisServer(CommonLib):
 
         logger.info(url)
         rsp = self.get(url, headers=self.headers)
+        return rsp
+
+    def create_service_ratelimit_rule(self, url, rule_name, rule_type, ratelimit_namespace, ratelimit_service,
+                                      ratelimit_method, ratelimit_arguments, ratelimit_amounts, ratelimit_regex_combine,
+                                      ratelimit_action, failover, disable, max_queue_delay=1, resource="QPS"):
+        req = self._format_params(name=rule_name, type=rule_type, namespace=ratelimit_namespace,
+                                  service=ratelimit_service, method=ratelimit_method, arguments=ratelimit_arguments,
+                                  amounts=ratelimit_amounts, regex_combine=ratelimit_regex_combine,
+                                  action=ratelimit_action, failover=failover, disable=disable,
+                                  max_queue_delay=max_queue_delay, resource=resource)
+        rsp = self.post(url, json=[req], headers=self.headers)
+        return rsp
+
+    def describe_service_ratelimit_rule(self, url, limit, offset, brief=None, ratelimit_rule_id=None,
+                                        ratelimit_rule_name=None, ratelimit_rule_disable=None,
+                                        namespace_name=None, service_name=None):
+        req = self._format_params(limit=limit, offset=offset, brief=brief, id=ratelimit_rule_id,
+                                  name=ratelimit_rule_name, disable=ratelimit_rule_disable, namespace=namespace_name,
+                                  service=service_name)
+        rsp = self.get(url, params=req, headers=self.headers)
+        return rsp
+
+    def modify_service_ratelimit_rule(self, url, rule_id, rule_type, ratelimit_namespace, ratelimit_service,
+                                      ratelimit_method, ratelimit_arguments, ratelimit_amounts, ratelimit_regex_combine,
+                                      ratelimit_action, failover, disable, max_queue_delay=1, resource="QPS"):
+        req = self._format_params(id=rule_id, type=rule_type, namespace=ratelimit_namespace,
+                                  service=ratelimit_service, method=ratelimit_method, arguments=ratelimit_arguments,
+                                  amounts=ratelimit_amounts, regex_combine=ratelimit_regex_combine,
+                                  action=ratelimit_action, failover=failover, disable=disable,
+                                  max_queue_delay=max_queue_delay, resource=resource)
+        rsp = self.put(url, json=[req], headers=self.headers)
+        return rsp
+
+    def delete_service_ratelimit_rule(self, url, rule_id):
+        req = self._format_params(id=rule_id)
+        rsp = self.post(url, json=[req], headers=self.headers)
         return rsp

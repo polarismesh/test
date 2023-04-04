@@ -27,7 +27,7 @@ class ServiceDescribeCheck(PolarisTestCase):
         return_service_size = rsp.json().get("size", None)
 
         self.assert_("Fail! No return except polaris code.", polaris_code == check_polaris_code)
-        self.assert_("Fail! No return except polaris amount.", return_service_total == check_total)
+        self.assert_("Fail! No return except polaris service amount.", return_service_total == check_total)
         self.assert_("Fail! No return except polaris service size.", return_service_size == check_size)
 
         return_services = rsp.json().get("services", None)
@@ -56,7 +56,7 @@ class ServiceDescribeCheck(PolarisTestCase):
         metadata = {metadata_key: metadata_value}
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
 
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.create_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         self.create_service_request = CreateServiceRequest(service_name=self.service_name,
                                                            namespace_name=self.namespace_name,
                                                            owners="polaris", business=business, department=department,

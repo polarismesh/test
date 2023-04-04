@@ -1,3 +1,4 @@
+from testbase.conf import settings
 from testbase.datadrive import DataDrive
 
 from src.polaris_test_lib.polaris import PolarisServer
@@ -6,13 +7,15 @@ from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 @DataDrive({
     "Regular": {
-        "username": "polaris",
-        "password": "polaris",
+        "username": settings.POLARIS_SERVER_USERNAME,
+        "password": settings.POLARIS_SERVER_PASSWORD,
+        "owner": settings.POLARIS_SERVER_TOKEN_OWNER,
         "case_desc": "Using correct username and password to get token."
     },
     "irregular": {
         "username": "polaris",
         "password": "polaris-error",
+        "owner": "polaris",
         "case_desc": "Using correct username and error password to get token."
     },
 })
@@ -28,12 +31,12 @@ class PolarisInitialLoginCheck(PolarisTestCase):
 
     def run_test(self):
         # ===========================
-        url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH
+        url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.LOGIN_PATH
 
         # ===========================
         self.start_step(self.casedata["case_desc"])
         rsp = PolarisServer.get_initial_token(url=url, username=self.casedata["username"],
-                                              password=self.casedata["password"])
+                                              password=self.casedata["password"], owner=self.casedata["owner"])
         login_resp = rsp.json().get("loginResponse", None)
         polaris_code = rsp.json().get("code", None)
         # ===========================

@@ -12,6 +12,9 @@ POLARIS_SERVER_USERNAME = "polaris"
 # polaris console root password
 POLARIS_SERVER_PASSWORD = "polaris"
 
+# polaris console token owner, default is polaris
+POLARIS_SERVER_TOKEN_OWNER = "polaris"
+
 # polaris console address
 POLARIS_CONSOLE_ADDR = "{POLARIS_SERVER_ADDR}:8080".format(POLARIS_SERVER_ADDR=POLARIS_SERVER_ADDR)
 
@@ -29,3 +32,13 @@ POLARIS_SERVER_EUREKA_SERVICE_ADDR = "{POLARIS_SERVER_ADDR}:8761".format(POLARIS
 
 # polaris server pushgateway address
 POLARIS_SERVER_PUSHGATEWAY_ADDR = "{POLARIS_SERVER_ADDR}:9091".format(POLARIS_SERVER_ADDR=POLARIS_SERVER_ADDR)
+
+# tencent kona jdk version, default 11
+# use kona jdk 17 to test spring cloud tencent 2022
+# use kona jdk 11 to test spring cloud tencent 2021/2020
+POLARIS_TEST_SCT_KONA_JDK_VERSION = 11
+
+# spring cloud tencent version, default 2021
+# use kona jdk 17 to test spring cloud tencent 2022
+# use kona jdk 11 to test spring cloud tencent 2021/2020
+POLARIS_TEST_SCT_EXAMPLE_VERSION = 2021

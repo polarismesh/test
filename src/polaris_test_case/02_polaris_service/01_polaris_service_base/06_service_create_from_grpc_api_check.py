@@ -1,6 +1,7 @@
+import os
 import random
 import string
-import subprocess
+import time
 
 from testbase.conf import settings
 from testbase.testcase import TestCase
@@ -39,12 +40,14 @@ class ServiceCreateFromGRPCApiCheck(PolarisTestCase):
         cmd_exe = "cd %s && chmod 777 provider && sed -i 's/ipaddr/%s/g' polaris.yaml && " \
                   "nohup ./provider -service=%s -namespace=%s -auto_shutdown=true &" % \
                   (new_directory, reg_ip, self.service_name, self.namespace_name)
-        self.log_info("Exec cmd: %s" % cmd_exe)
-        rsp = subprocess.check_output(cmd_exe, shell=True)
-        self.log_info("\n" + rsp.decode())
+        if os.system(cmd_exe) != 0:
+            raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
+        else:
+            self.log_info("Exec cmd: %s success!" % cmd_exe)
 
         # ===========================
-        self.start_step("Check create service.")
+        self.start_step("Wait for 10s to check create service.")
+        time.sleep(10)
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
         return_services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)

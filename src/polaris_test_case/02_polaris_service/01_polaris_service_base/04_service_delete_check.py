@@ -35,7 +35,7 @@ class ServiceDeleteCheck(PolarisTestCase):
         metadata_key = "AutoTestMetadataKey"
         metadata_value = "AutoTestMetadataValue-" + _random_str
         metadata = {metadata_key: metadata_value}
-        self.create_service_url = "http://" + self.polaris_console_addr + PolarisServer.SERVICE_PATH
+        self.create_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.SERVICE_PATH
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(time.time())))
 
         self.create_service_request = [
@@ -52,7 +52,7 @@ class ServiceDeleteCheck(PolarisTestCase):
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
         # ===========================
         self.start_step("Delete error polaris service.")
-        delete_service_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_SERVICE_PATH
+        delete_service_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_PATH
         err_service_name = "AutoTestPolarisService-err" + _random_str
         delete_service_req = DeleteServiceRequest(namespace_name="default", service_name=err_service_name)
         rsp = self.polaris_server.delete_service(delete_service_url, delete_service_req)

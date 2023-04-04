@@ -1,5 +1,6 @@
 import random
 import string
+
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
@@ -28,14 +29,14 @@ class NamespaceDeleteCheck(PolarisTestCase):
         self.create_single_namespace(self.polaris_server, self.namespace_name)
         # ===========================
         self.start_step("Delete error polaris namespace.")
-        delete_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_NAMESPACE_PATH
+        delete_namespace_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_NAMESPACE_PATH
         delete_namespace_request = DeleteNamespaceRequest(namespace_name="AutoTestPolarisNamespace-delete-error")
         rsp = self.polaris_server.delete_namespace(delete_namespace_url, delete_namespace_request)
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
         # ===========================
         self.start_step("Delete correct polaris namespace.")
-        delete_namespace_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_NAMESPACE_PATH
+        delete_namespace_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_NAMESPACE_PATH
         delete_namespace_request = DeleteNamespaceRequest(namespace_name=self.namespace_name)
         rsp = self.polaris_server.delete_namespace(delete_namespace_url, delete_namespace_request)
         polaris_code = rsp.json().get("code", None)
