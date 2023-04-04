@@ -24,7 +24,9 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
         # ===========================
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.namespace_name = "AutoTestPolarisRatelimitNamespace-" + _random_str
+        self.fake_namespace_name = "test-fake-namespace" + _random_str
         self.service_name = "AutoTestPolarisRatelimitService-" + _random_str
+        self.fake_service_name = "test-fake-service" + _random_str
 
         self.create_single_namespace(self.polaris_server, namespace_name=self.namespace_name)
         self.create_single_service(self.polaris_server, self.service_name, self.namespace_name)
@@ -137,8 +139,8 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
 
         # ===========================
         self.start_step("update rule limit service describe.")
-        _kwargs["ratelimit_namespace"] = "test-fake-namespace"
-        _kwargs["ratelimit_service"] = "test-fake-service"
+        _kwargs["ratelimit_namespace"] = self.fake_namespace_name
+        _kwargs["ratelimit_service"] = self.fake_service_name
         _kwargs["ratelimit_method"] = {"value": "test-fake-method", "type": "NOT_EQUALS", "value_type": "TEXT"}
         _kwargs["ratelimit_arguments"] = [
             {"type": "HEADER", "key": "test-fake-ratelimit-header",
@@ -242,7 +244,7 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
                          re_srv_ratelimit_regex_combine == _kwargs["ratelimit_regex_combine"])
 
     def post_test(self):
-        self.clean_test_namespaces(self.polaris_server, namespace_names=[self.namespace_name])
+        self.clean_test_namespaces(self.polaris_server, namespace_names=[self.namespace_name, self.fake_namespace_name])
 
 
 if __name__ == '__main__':

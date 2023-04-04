@@ -38,7 +38,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 #### 若您期望使用执行配置文件启动（此处将会执行当前支持的所有测试用例场景，采用并发线程执行，并发数5，请注意执行机以及server端负载。）：
 
-    python3 manage.py runtest --config-file runtest_config.json
+    python3 src/manage.py runtest --config-file src/runtest_config.json
 
 ### 6. 基于 Spring CLoud Tencent 的服务治理相关测试说明
 
