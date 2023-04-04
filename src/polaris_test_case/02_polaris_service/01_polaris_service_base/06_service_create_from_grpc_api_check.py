@@ -1,6 +1,7 @@
 import os
 import random
 import string
+import time
 
 from testbase.conf import settings
 from testbase.testcase import TestCase
@@ -45,7 +46,8 @@ class ServiceCreateFromGRPCApiCheck(PolarisTestCase):
             self.log_info("Exec cmd: %s success!" % cmd_exe)
 
         # ===========================
-        self.start_step("Check create service.")
+        self.start_step("Wait for 10s to check create service.")
+        time.sleep(10)
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
         return_services = self.get_all_services(self.polaris_server, namespace_name=self.namespace_name)

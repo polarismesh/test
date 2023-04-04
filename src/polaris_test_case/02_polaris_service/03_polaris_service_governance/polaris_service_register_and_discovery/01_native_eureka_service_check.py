@@ -119,6 +119,7 @@ class NativeEurekaServiceCheck(PolarisTestCase):
             cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
             os.system(cmd_kill)
         # ===========================
-        self.start_step("Clean all eureka services")
+        self.start_step("Wait for 10s to clean eureka services.")
+        time.sleep(10)
         self.clean_test_services(self.polaris_server, service_name=self.eureka_consumer_name.lower())
         self.clean_test_services(self.polaris_server, service_name=self.eureka_provider_name.lower())

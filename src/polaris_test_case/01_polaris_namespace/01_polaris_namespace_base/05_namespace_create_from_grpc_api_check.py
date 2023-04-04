@@ -1,6 +1,7 @@
 import os
 import random
 import string
+import time
 
 from testbase.conf import settings
 from testbase.testcase import TestCase
@@ -45,7 +46,8 @@ class NamespaceCreateFromGRPCApiCheck(PolarisTestCase):
             self.log_info("Exec cmd: %s success!" % cmd_exe)
 
         # ===========================
-        self.start_step("Check create namespace.")
+        self.start_step("Wait for 10s to check create namespace.")
+        time.sleep(10)
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
         return_namespaces = self.get_all_namespaces(self.polaris_server)
