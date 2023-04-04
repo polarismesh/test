@@ -88,7 +88,8 @@ class ServiceRatelimitDescribeCheck(PolarisTestCase):
                                   "key": "AutoTestPolarisRatelimitKey",
                                   "value": {"type": "EXACT", "value": "AutoTestPolarisRatelimitValue"}}],
             ratelimit_amounts=[{"maxAmount": 1, "validDuration": "1s"}],
-            ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover, disable=False)
+            ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover,
+            disable=False)
 
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
@@ -100,51 +101,60 @@ class ServiceRatelimitDescribeCheck(PolarisTestCase):
         self.start_step("Check describe service by rule name.")
         _kwargs.update({"ratelimit_rule_name": self.ratelimit_rule_name})
         self.check_return_service_ratelimit_rules(check_total=1, check_size=1, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name],
+                                                  **_kwargs)
 
         _kwargs["ratelimit_rule_name"] = "ErrorRuleName"
         self.check_return_service_ratelimit_rules(check_total=0, check_size=0, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[], **_kwargs)
 
         _kwargs["ratelimit_rule_name"] = _random_str
         self.check_return_service_ratelimit_rules(check_total=2, check_size=2, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name, self.ratelimit_rule_name2], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name,
+                                                                                      self.ratelimit_rule_name2],
+                                                  **_kwargs)
 
         # ===========================
         self.start_step("Check describe service by correct rule name and status.")
         _kwargs.update({"ratelimit_rule_disable": "true"})
         self.check_return_service_ratelimit_rules(check_total=1, check_size=1, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name], **_kwargs)
-
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name],
+                                                  **_kwargs)
 
         _kwargs.update({"ratelimit_rule_disable": "false"})
         self.check_return_service_ratelimit_rules(check_total=1, check_size=1, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name2], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name2],
+                                                  **_kwargs)
 
         # ===========================
         self.start_step("Check describe service by correct rule name, limit namespace.")
         _kwargs.pop("ratelimit_rule_disable")
         _kwargs.update({"namespace_name": self.namespace_name})
         self.check_return_service_ratelimit_rules(check_total=2, check_size=2, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name, self.ratelimit_rule_name2], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name,
+                                                                                      self.ratelimit_rule_name2],
+                                                  **_kwargs)
 
         _kwargs["namespace_name"] = "Polaris"
         self.check_return_service_ratelimit_rules(check_total=0, check_size=0, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[], **_kwargs)
 
         # ===========================
         self.start_step("Check describe service by correct rule name, limit namespace and limit service.")
         _kwargs["namespace_name"] = self.namespace_name
         _kwargs.update({"service_name": self.service_name})
         self.check_return_service_ratelimit_rules(check_total=1, check_size=1, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name],
+                                                  **_kwargs)
 
         _kwargs["service_name"] = self.service_name2
         self.check_return_service_ratelimit_rules(check_total=1, check_size=1, check_polaris_code=200000,
-                             check_service_ratelimit_rule_names=[self.ratelimit_rule_name2], **_kwargs)
+                                                  check_service_ratelimit_rule_names=[self.ratelimit_rule_name2],
+                                                  **_kwargs)
 
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, namespace_names=[self.namespace_name])
+
 
 if __name__ == '__main__':
     ServiceRatelimitDescribeCheck().debug_run()

@@ -127,11 +127,12 @@ class PolarisTestCase(TestCase):
             else:
                 self.log_info("Exec cmd: %s success!" % cmd_unzip)
 
-    def get_console_token(self, username=settings.POLARIS_SERVER_USERNAME, password=settings.POLARIS_SERVER_PASSWORD):
+    def get_console_token(self, username=settings.POLARIS_SERVER_USERNAME, password=settings.POLARIS_SERVER_PASSWORD,
+                          owner=settings.POLARIS_SERVER_TOKEN_OWNER):
         # ===========================
         self.start_step("Get polaris main user console token.")
         login_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.LOGIN_PATH
-        rsp = PolarisServer.get_initial_token(url=login_url, username=username, password=password)
+        rsp = PolarisServer.get_initial_token(url=login_url, username=username, password=password, owner=owner)
         self.token = rsp.json().get("loginResponse", None).get("token", None)
         self.user_id = rsp.json().get("loginResponse", None).get("user_id", None)
 
@@ -369,8 +370,9 @@ class PolarisTestCase(TestCase):
 
             delete_service_ratelimit_rule_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_SERVICE_RATELIMIT_PATH
             for ratelimit_rule in ratelimit_rules:
-                self.log_info("Delete service ratelimit_rule: %s:%s in %s:%s" % (
-                ratelimit_rule["name"], ratelimit_rule["id"], ratelimit_rule["service"], ratelimit_rule["namespace"]))
+                self.log_info("Delete service ratelimit rule: %s:%s in %s:%s" % (
+                    ratelimit_rule["name"], ratelimit_rule["id"], ratelimit_rule["service"],
+                    ratelimit_rule["namespace"]))
                 rsp = polaris_server.delete_service_ratelimit_rule(delete_service_ratelimit_rule_url,
                                                                    rule_id=ratelimit_rule["id"])
             polaris_code = rsp.json().get("code", None)

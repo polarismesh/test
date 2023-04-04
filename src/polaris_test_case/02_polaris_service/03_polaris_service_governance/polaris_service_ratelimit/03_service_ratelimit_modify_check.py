@@ -40,7 +40,8 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
         _kwargs = {"url": self.create_service_ratelimit_rule_url, "rule_name": self.ratelimit_rule_name,
                    "rule_type": "LOCAL", "ratelimit_namespace": self.namespace_name,
                    "ratelimit_service": self.service_name,
-                   "ratelimit_method": {"value": "AutoTestPolarisRatelimitMethod", "type": "EXACT", "value_type": "TEXT"},
+                   "ratelimit_method": {"value": "AutoTestPolarisRatelimitMethod", "type": "EXACT",
+                                        "value_type": "TEXT"},
                    "ratelimit_arguments": [
                        {"type": "CUSTOM", "key": "AutoTestPolarisRatelimitKey",
                         "value": {"type": "EXACT", "value": "AutoTestPolarisRatelimitValue"}}],
@@ -48,7 +49,7 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
                    "ratelimit_regex_combine": True,
                    "ratelimit_action": "REJECT",
                    "failover": "FAILOVER_LOCAL",
-                   "disable":True
+                   "disable": True
                    }
         rsp = self.polaris_server.create_service_ratelimit_rule(**_kwargs)
 
@@ -243,7 +244,6 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
     def post_test(self):
         self.clean_test_namespaces(self.polaris_server, namespace_names=[self.namespace_name])
 
+
 if __name__ == '__main__':
     ServiceRatelimitModifyCheck().debug_run()
-
-
