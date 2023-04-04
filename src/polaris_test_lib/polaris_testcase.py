@@ -362,7 +362,8 @@ class PolarisTestCase(TestCase):
         now = time.time()
         while time.time() - now < wait_time:
             rsp = self.polaris_server.describe_service_ratelimit_rule(self.describe_service_ratelimit_rule_url,
-                                                                      limit=10, offset=0)
+                                                                      limit=10, offset=0, service_name=service_name,
+                                                                      namespace_name=namespace_name)
             ratelimit_rules = rsp.json().get("rateLimits", None)
             if len(ratelimit_rules) == 0:
                 self.log_info("Delete service ratelimit rules finish.")
