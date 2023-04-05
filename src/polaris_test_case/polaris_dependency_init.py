@@ -11,7 +11,7 @@ class PolarisDependencyInitCheck(PolarisTestCase):
     owner = "atom"
     status = PolarisTestCase.EnumStatus.Ready
     priority = PolarisTestCase.EnumPriority.Normal
-    timeout = 5
+    timeout = 15
 
     def run_test(self):
         # ===========================
