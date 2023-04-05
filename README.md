@@ -28,13 +28,15 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
     export PYTHONPATH=$PYTHONPATH:`pwd`;echo $PYTHONPATH
 
-其中 ${polaris_test_dir} 请替换为您当前polaris-test所在目录，例如：/root/test
-
 ### 5. 执行测试，详细配置见 [QTAF 说明文档](https://qta-testbase.readthedocs.io/zh/latest/testrun.html#)
+
+#### 测试依赖准备【这一步会安装配置文件中指定的jdk版本和sct版本】
+
+    python3 src/manage.py runtest src/polaris_test_case/polaris_dependency_init.py
 
 #### 若您期望自定义执行用例启动：
 
-    python3 src/manage.py runtest src/polaris_test_case/polaris_initial_login_check.py
+    python3 src/manage.py runtest src/polaris_test_case/polaris_initial_login_check.py [基础测试用例，用于检查初始密码登录。]
 
 #### 若您期望使用执行配置文件启动（此处将会执行当前支持的所有测试用例场景，采用并发线程执行，并发数5，请注意执行机以及server端负载。）：
 
