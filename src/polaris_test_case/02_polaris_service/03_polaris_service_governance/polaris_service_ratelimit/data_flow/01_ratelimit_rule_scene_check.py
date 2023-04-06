@@ -70,7 +70,7 @@ class RatelimitScene01Check(PolarisTestCase):
         # ===========================
         self.start_step("Request sct consumer to check provider ratelimit.")
 
-        cmd_curl = "curl -sv 'http://127.0.0.1:%s/business/invoke'" % self.ratelimit_caller_port
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
         rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
         # business/invoke will invoke ratelimit callee 30 times,
         # and the 2 callee instances will be limited for at least 19 times
