@@ -58,7 +58,6 @@ class RatelimitCheck(PolarisTestCase):
         for srv, srv_info in srv_maps.items():
             self.log_info("Register spring cloud tencent %s example." % srv)
             for _srv in srv_info:
-                _region_info = _srv["srv_region_info"].split(":")
                 _srv_port = _srv["srv_port"]
                 _srv_jar_name = _srv["jar_name"]
                 date_now = time.strftime("%Y%m%d%H%M", time.localtime(int(time.time())))
