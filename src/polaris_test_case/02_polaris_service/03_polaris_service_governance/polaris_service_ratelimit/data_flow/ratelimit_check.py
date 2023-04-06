@@ -71,7 +71,6 @@ class RatelimitCheck(PolarisTestCase):
                           "-Dserver.port={srv_port} " \
                           "-jar {jar_name}*.jar " \
                           ">{jar_name}.{srv_port}.{date}.log 2>&1 &".format(
-                    zone=_region_info[0], region=_region_info[1], campus=_region_info[2],
                     temp_dir=new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION,
                     polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, jar_name=_srv_jar_name, date=date_now
                 )
