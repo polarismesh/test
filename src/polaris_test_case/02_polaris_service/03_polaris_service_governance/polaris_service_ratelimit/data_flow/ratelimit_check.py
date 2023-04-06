@@ -44,13 +44,13 @@ class RatelimitCheck(PolarisTestCase):
         reg_ip = settings.POLARIS_SERVER_ADDR
         srv_maps = {
             "RateLimitCallerService": [
-                {"srv_port": self.discovery_caller_port,
+                {"srv_port": self.ratelimit_caller_port,
                  "jar_name": "ratelimit-caller-service"}
             ],
             "RateLimitCalleeService": [
-                {"srv_port": self.discovery_callee1_port,
+                {"srv_port": self.ratelimit_callee1_port,
                  "jar_name": "ratelimit-callee-service"},
-                {"srv_port": self.discovery_callee2_port,
+                {"srv_port": self.ratelimit_callee2_port,
                  "jar_name": "ratelimit-callee-service"}
             ]
         }
@@ -84,7 +84,7 @@ class RatelimitCheck(PolarisTestCase):
         success_list = []
         start = time.time()
         while len(success_list) < 3 and time.time() - start < 60:
-            for srv_port in [self.discovery_caller_port, self.discovery_callee1_port, self.discovery_callee2_port]:
+            for srv_port in [self.ratelimit_caller_port, self.ratelimit_callee1_port, self.ratelimit_callee2_port]:
                 if srv_port in success_list:
                     continue
 
