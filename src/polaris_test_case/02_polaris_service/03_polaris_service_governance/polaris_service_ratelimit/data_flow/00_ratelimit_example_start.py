@@ -10,9 +10,9 @@ from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
-class RatelimitCheck(PolarisTestCase):
+class RatelimitExampleStart(PolarisTestCase):
     """
-    Used to test ratelimit rule.
+    Used to start sct ratelimit example.
 
     """
     owner = "atom"
@@ -54,6 +54,7 @@ class RatelimitCheck(PolarisTestCase):
                  "jar_name": "ratelimit-callee-service"}
             ]
         }
+        test_custom_tags = "'test-key-1:test-value-1, test-key-2:test-value-2'"
 
         for srv, srv_info in srv_maps.items():
             self.log_info("Register spring cloud tencent %s example." % srv)
@@ -68,10 +69,12 @@ class RatelimitCheck(PolarisTestCase):
                           "-Dspring.cloud.polaris.stat.pushgateway.address={polaris_ip}:9091 " \
                           "-Dspring.cloud.polaris.address=grpc://{polaris_ip}:8091 " \
                           "-Dserver.port={srv_port} " \
+                          "-Dlabel.key-value={test_custom_tags} " \
                           "-jar {jar_name}*.jar " \
                           ">{jar_name}.{srv_port}.{date}.log 2>&1 &".format(
                     temp_dir=new_directory, kona_jdk_version=settings.POLARIS_TEST_SCT_KONA_JDK_VERSION,
-                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, jar_name=_srv_jar_name, date=date_now
+                    polaris_ip=reg_ip, srv_port=_srv_port, srv_name=srv, test_custom_tags=test_custom_tags,
+                    jar_name=_srv_jar_name, date=date_now
                 )
                 if os.system(cmd_exe) != 0:
                     raise RuntimeError("Exec cmd: %s error!" % cmd_exe)
@@ -98,17 +101,6 @@ class RatelimitCheck(PolarisTestCase):
             raise RuntimeError("Start up failed!")
         time.sleep(60)
 
-    # def post_test(self):
-    #     # ===========================
-    #     self.start_step("Stop all reatelimit services")
-    #     for p in [self.ratelimit_caller_port, self.ratelimit_callee1_port, self.ratelimit_callee2_port]:
-    #         cmd_kill = "ps axu | grep TencentKona | grep %s |grep -v grep | awk '{print $2}' | xargs kill -9 " % p
-    #         os.system(cmd_kill)
-    #     # ===========================
-    #     self.start_step("Clean all discovery services")
-    #     self.clean_test_services(self.polaris_server, service_name="DiscoveryCallerService")
-    #     self.clean_test_services(self.polaris_server, service_name="DiscoveryCalleeService")
-
 
 if __name__ == '__main__':
-    RatelimitCheck().debug_run()
+    RatelimitExampleStart().debug_run()

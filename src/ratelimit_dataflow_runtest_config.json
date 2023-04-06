@@ -1,0 +1,28 @@
+{
+  "tests": [
+    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.data_flow.00_ratelimit_example_start",
+    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.data_flow.01_ratelimit_rule_scene_check"
+  ],
+  "excluded_name": [],
+  "owner": [],
+  "priority": [
+    "BVT",
+    "High",
+    "Normal"
+  ],
+  "status": [
+    "Ready"
+  ],
+  "tag": [],
+  "excluded_tag": [],
+  "working_dir": "ratelimit_dataflow_test_results",
+  "stop_on_failure": true,
+  "execute_type": "sequential",
+  "report_type": "html",
+  "report_args": "--title polaris-ratelimit-dataflow-autotest-results ",
+  "resmgr_backend_type": "local",
+  "runner_type": "basic",
+  "runner_args": "",
+  "share_data": {},
+  "global_parameters": {}
+}
