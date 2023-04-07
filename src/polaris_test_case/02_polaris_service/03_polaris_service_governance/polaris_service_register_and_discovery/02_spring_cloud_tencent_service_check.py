@@ -133,9 +133,9 @@ class SpringCloudTencentServiceCheck(PolarisTestCase):
         # ===========================
         self.start_step("Request sct consumer to check provider discovery and sct feign invoke.")
 
-        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/feign?value1=1&value2=3'" % self.discovery_caller_port
+        cmd_curl = "curl -sv 'http://127.0.0.1:%s/discovery/service/caller/feign?value1=10101&value2=20202'" % self.discovery_caller_port
         self.req_and_check(
-            srv_res_check_map={4: {"discovery_callee": 1}},
+            srv_res_check_map={30303: {"discovery_callee": 1}},
             cmd_req_line=cmd_curl, all_req_num=5
         )
         # ===========================
