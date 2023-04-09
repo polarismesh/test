@@ -1,5 +1,6 @@
 import random
 import string
+import time
 
 from testbase.testcase import TestCase
 
@@ -67,7 +68,8 @@ class RatelimitScene02Check(PolarisTestCase):
 
         # ===========================
         self.start_step(
-            "Request sct consumer to check provider ratelimit: test-header-key1:test-header-value1 will be limited.")
+            "Wait 10s to request sct consumer to check provider ratelimit: test-header-key1:test-header-value1 will be limited.")
+        time.sleep(10)
         cmd_curl = "curl -sv -H'test-header-key1:test-header-value1' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
         rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
         # business/invoke will invoke ratelimit callee 30 times,
