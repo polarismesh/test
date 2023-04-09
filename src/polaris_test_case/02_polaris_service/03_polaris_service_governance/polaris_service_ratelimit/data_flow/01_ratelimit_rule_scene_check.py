@@ -11,7 +11,7 @@ class RatelimitScene01Check(PolarisTestCase):
     """
     Used to check ratelimit dataflow scene 01.
 
-    Ratelimit type: Stand-alone ratelimit
+    Ratelimit type: Standalone ratelimit
     Target Service(Interface): default:RateLimitCalleeService:*
     Request traffic portrait: Custom-Label test-key1 EQUAL test-value1
     Ratelimit conditions: Second-Level 5 times in 10 seconds
@@ -34,7 +34,7 @@ class RatelimitScene01Check(PolarisTestCase):
         ratelimit_callee_service = "RateLimitCalleeService"
 
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
-        self.ratelimit_rule_name = "RatelimitScene01Check-" + _random_str
+        self.ratelimit_rule_name = "RatelimitSceneCheck-" + _random_str
 
         # ===========================
         self.start_step("Create local service ratelimit rule %s to limit service %s in %s." % (

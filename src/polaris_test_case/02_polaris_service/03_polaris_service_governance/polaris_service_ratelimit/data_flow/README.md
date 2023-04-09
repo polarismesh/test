@@ -48,7 +48,7 @@ and [Tencent/QTAF](https://github.com/Tencent/QTAF.git).
 
 | 限流类型 |               目标服务               |             请求流量画像              | 限流条件 | 限流方案 |
 |:----:|:--------------------------------:|:-------------------------------:|:----:|:----:|
-| 单机限流 | default:RateLimitCalleeService:接口 包含 /business/info | 主调服务 default:RateLimitCallerService | 秒级 10秒5次 | 快速失败 |
+| 单机限流 | default:RateLimitCalleeService:接口 包含 /business/info | 主调服务 default 正则匹配 RateLimitCaller.* | 秒级 10秒5次 | 快速失败 |
 
 ### 06_ratelimit_rule_scene_check
 
