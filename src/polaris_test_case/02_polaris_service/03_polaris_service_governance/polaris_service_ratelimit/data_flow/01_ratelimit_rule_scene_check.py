@@ -1,13 +1,9 @@
-import os
 import random
 import string
-import time
 
-from testbase.conf import settings
 from testbase.testcase import TestCase
 
 from src.polaris_test_lib.polaris import PolarisServer
-from src.polaris_test_lib.polaris_request import ModifyServiceRequest
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
@@ -40,12 +36,6 @@ class RatelimitScene01Check(PolarisTestCase):
         _random_str = ''.join(random.sample(string.ascii_letters + string.digits, 4))
         self.ratelimit_rule_name = "RatelimitScene01Check-" + _random_str
 
-
-        # ===========================
-        metadata_key = "test-key-1"
-        metadata_value = "test-value-1"
-        metadata = {metadata_key: metadata_value}
-
         # ===========================
         self.start_step("Create local service ratelimit rule %s to limit service %s in %s." % (
             self.ratelimit_rule_name, ratelimit_callee_service, ratelimit_callee_namespace))
@@ -54,6 +44,8 @@ class RatelimitScene01Check(PolarisTestCase):
 
         srv_ratelimit_rule_failover = "FAILOVER_LOCAL"
         srv_ratelimit_rule_type = "LOCAL"
+        metadata_key = "test-key-1"
+        metadata_value = "test-value-1"
         rsp = self.polaris_server.create_service_ratelimit_rule(
             self.create_service_ratelimit_rule_url, self.ratelimit_rule_name, rule_type=srv_ratelimit_rule_type,
             ratelimit_namespace=ratelimit_callee_namespace, ratelimit_service=ratelimit_callee_service,
@@ -62,7 +54,8 @@ class RatelimitScene01Check(PolarisTestCase):
                                   "key": metadata_key,
                                   "value": {"type": "EXACT", "value": metadata_value}}],
             ratelimit_amounts=[{"maxAmount": 5, "validDuration": "10s"}],
-            ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover, disable=False)
+            ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover,
+            disable=False)
 
         polaris_code = rsp.json().get("code", None)
         self.assert_("Fail! No return except polaris code.", polaris_code == 200000)
