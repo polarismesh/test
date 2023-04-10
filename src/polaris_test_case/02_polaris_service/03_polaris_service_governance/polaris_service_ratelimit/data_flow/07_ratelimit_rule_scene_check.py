@@ -55,7 +55,7 @@ class RatelimitScene07Check(PolarisTestCase):
         rsp = self.polaris_server.modify_service_ratelimit_rule(
             self.service_ratelimit_rule_url, rule_id, rule_name, rule_type=srv_ratelimit_rule_type,
             ratelimit_namespace=ratelimit_callee_namespace, ratelimit_service=ratelimit_callee_service,
-            ratelimit_method={"value": "/business/info", "type": "EQUALS"},
+            ratelimit_method={"value": "/business/info", "type": "EXACT"},
             ratelimit_arguments=[{"type": "CALLER_IP",
                                   "key": "$caller_ip",
                                   "value": {"type": "REGEX", "value": "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"}}],
