@@ -75,11 +75,19 @@ class RatelimitScene07Check(PolarisTestCase):
         self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") >= 9)
         # ===========================
         self.start_step(
-            "Wait 10s to request sct consumer to check provider ratelimit: /business/invoke->/bussiness/info will be limited 20 times.")
-        time.sleep(10)
-        cmd_curl = "curl -sv -H'test-header-key1:test-header-value2' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
-        rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") >= 19)
+            "Request every 1 second sct consumer to check provider ratelimit: /business/invoke->/bussiness/info will be limited 20 times.")
+        for i in range(10):
+            cmd_curl = "curl -sv -H'test-header-key1:test-header-value2' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
+            rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
+            if rsp.count("TooManyRequests") == 30:
+                self.log_info("10s rate limit in effect!")
+                time.sleep(1)
+                continue
+            elif 21 >= rsp.count("TooManyRequests") >= 19:
+                self.log_info("20s rate limit in effect!")
+                break
+            else:
+                self.fail("Fail! No return except rate limit times.")
 
 
 if __name__ == '__main__':
