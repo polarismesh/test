@@ -58,7 +58,8 @@ class RatelimitScene07Check(PolarisTestCase):
             ratelimit_method={"value": "/business/info", "type": "EXACT"},
             ratelimit_arguments=[{"type": "CALLER_IP",
                                   "key": "$caller_ip",
-                                  "value": {"type": "REGEX", "value": "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"}}],
+                                  "value": {"type": "REGEX",
+                                            "value": "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"}}],
             ratelimit_amounts=[{"maxAmount": 10, "validDuration": "10s"}, {"maxAmount": 15, "validDuration": "20s"}],
             ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover,
             disable=False)
