@@ -214,10 +214,10 @@ class PolarisServer(CommonLib):
         rsp = self.get(url, params=req, headers=self.headers)
         return rsp
 
-    def modify_service_ratelimit_rule(self, url, rule_id, rule_type, ratelimit_namespace, ratelimit_service,
+    def modify_service_ratelimit_rule(self, url, rule_id, rule_name, rule_type, ratelimit_namespace, ratelimit_service,
                                       ratelimit_method, ratelimit_arguments, ratelimit_amounts, ratelimit_regex_combine,
                                       ratelimit_action, failover, disable, max_queue_delay=1, resource="QPS"):
-        req = self._format_params(id=rule_id, type=rule_type, namespace=ratelimit_namespace,
+        req = self._format_params(id=rule_id, name=rule_name, type=rule_type, namespace=ratelimit_namespace,
                                   service=ratelimit_service, method=ratelimit_method, arguments=ratelimit_arguments,
                                   amounts=ratelimit_amounts, regex_combine=ratelimit_regex_combine,
                                   action=ratelimit_action, failover=failover, disable=disable,

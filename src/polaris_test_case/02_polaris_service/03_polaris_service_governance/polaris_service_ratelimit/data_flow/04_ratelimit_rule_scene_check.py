@@ -8,13 +8,13 @@ from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 
-class RatelimitScene02Check(PolarisTestCase):
+class RatelimitScene04Check(PolarisTestCase):
     """
-    Used to check ratelimit dataflow scene 02.
+    Used to check ratelimit dataflow scene 04.
 
     Ratelimit type: Standalone ratelimit
-    Target Service(Interface): default:RateLimitCalleeService:EXACT /business/info
-    Request traffic portrait: HEADER test-header-key1 IN test-header-value1,test-header-value2
+    Target Service(Interface): default:RateLimitCalleeService:NOT_IN /business/info,/business/info2
+    Request traffic portrait: METHOD $method NOT_EQUAL POST
     Ratelimit conditions: Second-Level 5 times in 10 seconds
     Ratelimit Scheme: Fail Fast
 
@@ -51,15 +51,14 @@ class RatelimitScene02Check(PolarisTestCase):
 
         srv_ratelimit_rule_failover = "FAILOVER_LOCAL"
         srv_ratelimit_rule_type = "LOCAL"
-        header_key = "test-header-key-1"
-        header_value = "test-header-value1,test-header-value2"
+
         rsp = self.polaris_server.modify_service_ratelimit_rule(
             self.service_ratelimit_rule_url, rule_id, rule_name, rule_type=srv_ratelimit_rule_type,
             ratelimit_namespace=ratelimit_callee_namespace, ratelimit_service=ratelimit_callee_service,
-            ratelimit_method={"value": "/business/info", "type": "EXACT"},
-            ratelimit_arguments=[{"type": "HEADER",
-                                  "key": header_key,
-                                  "value": {"type": "IN", "value": header_value}}],
+            ratelimit_method={"value": "/business/info,/business/info2", "type": "NOT_IN"},
+            ratelimit_arguments=[{"type": "METHDO",
+                                  "key": "$method",
+                                  "value": {"type": "NOT_EQUAL", "value": "POST"}}],
             ratelimit_amounts=[{"maxAmount": 5, "validDuration": "10s"}],
             ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover,
             disable=False)
@@ -69,40 +68,18 @@ class RatelimitScene02Check(PolarisTestCase):
 
         # ===========================
         self.start_step(
-            "Wait 10s to request sct consumer to check provider ratelimit: test-header-key1:test-header-value1 will be limited.")
+            "Wait 10s to request sct consumer to check provider ratelimit: /business/invoke->/bussiness/info will not be limited.")
         time.sleep(10)
         cmd_curl = "curl -sv -H'test-header-key1:test-header-value1' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
         rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        # business/invoke will invoke ratelimit callee 30 times,
-        # and the 2 callee instances will be limited for at least 19 times
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") >= 19)
+        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") <= 0)
         # ===========================
         self.start_step(
-            "Request sct consumer to check provider ratelimit: test-header-key1:test-header-value2 will be limited.")
-        cmd_curl = "curl -sv -H'test-header-key1:test-header-value2' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
-        rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        # business/invoke will invoke ratelimit callee 30 times,
-        # and the 2 callee instances will be limited for at least 19 times
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") >= 19)
-        # ===========================
-        self.start_step(
-            "Request sct consumer to check provider ratelimit: /business/invoke/webclient->/bussiness/info will not be limited.")
+            "Request sct consumer to check provider ratelimit: /business/invoke/webclient->/bussiness/info/webclient will be limited.")
         cmd_curl = "curl -sv -H'test-header-key1:test-header-value2' 'http://127.0.0.1:%s/business/invoke/webclient'" % ratelimit_caller_port
         rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") <= 0)
-        # ===========================
-        self.start_step(
-            "Request sct consumer to check provider ratelimit: test-header-key1:test-header-value3 will not be limited.")
-        cmd_curl = "curl -sv -H'test-header-key1:test-header-value3' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
-        rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") <= 0)
-        # ===========================
-        self.start_step(
-            "Request sct consumer to check provider ratelimit: test-header-key2:test-header-value1 will not be limited.")
-        cmd_curl = "curl -sv -H'test-header-key2:test-header-value1' 'http://127.0.0.1:%s/business/invoke'" % ratelimit_caller_port
-        rsp, stderr = self.execute_shell(cmd_curl, timeout=15)
-        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") <= 0)
+        self.assert_("Fail! No return except rate limit times.", rsp.count("TooManyRequests") >= 19)
 
 
 if __name__ == '__main__':
-    RatelimitScene02Check().debug_run()
+    RatelimitScene04Check().debug_run()
