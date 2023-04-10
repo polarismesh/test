@@ -56,7 +56,7 @@ class RatelimitScene04Check(PolarisTestCase):
             self.service_ratelimit_rule_url, rule_id, rule_name, rule_type=srv_ratelimit_rule_type,
             ratelimit_namespace=ratelimit_callee_namespace, ratelimit_service=ratelimit_callee_service,
             ratelimit_method={"value": "/business/info,/business/info2", "type": "NOT_IN"},
-            ratelimit_arguments=[{"type": "METHDO",
+            ratelimit_arguments=[{"type": "METHOD",
                                   "key": "$method",
                                   "value": {"type": "NOT_EQUAL", "value": "POST"}}],
             ratelimit_amounts=[{"maxAmount": 5, "validDuration": "10s"}],
