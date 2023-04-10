@@ -14,7 +14,7 @@ class RatelimitScene04Check(PolarisTestCase):
 
     Ratelimit type: Standalone ratelimit
     Target Service(Interface): default:RateLimitCalleeService:NOT_IN /business/info,/business/info2
-    Request traffic portrait: METHOD $method NOT_EQUAL POST
+    Request traffic portrait: METHOD $method NOT_EQUALS POST
     Ratelimit conditions: Second-Level 5 times in 10 seconds
     Ratelimit Scheme: Fail Fast
 
@@ -58,7 +58,7 @@ class RatelimitScene04Check(PolarisTestCase):
             ratelimit_method={"value": "/business/info,/business/info2", "type": "NOT_IN"},
             ratelimit_arguments=[{"type": "METHOD",
                                   "key": "$method",
-                                  "value": {"type": "NOT_EQUAL", "value": "POST"}}],
+                                  "value": {"type": "NOT_EQUALS", "value": "POST"}}],
             ratelimit_amounts=[{"maxAmount": 5, "validDuration": "10s"}],
             ratelimit_regex_combine=True, ratelimit_action="REJECT", failover=srv_ratelimit_rule_failover,
             disable=False)
