@@ -65,7 +65,6 @@ class ServiceRatelimitModifyCheck(PolarisTestCase):
         # ===========================
         self.start_step("update rule status DISABLE to ENABLE.")
         _kwargs.update({"rule_id": re_srv_ratelimit_rule_id})
-        _kwargs.pop("rule_name")
 
         _kwargs["disable"] = False
 
