@@ -51,7 +51,7 @@ class RatelimitScene02Check(PolarisTestCase):
 
         srv_ratelimit_rule_failover = "FAILOVER_LOCAL"
         srv_ratelimit_rule_type = "LOCAL"
-        header_key = "test-header-key-1"
+        header_key = "test-header-key1"
         header_value = "test-header-value1,test-header-value2"
         rsp = self.polaris_server.modify_service_ratelimit_rule(
             self.service_ratelimit_rule_url, rule_id, rule_name, rule_type=srv_ratelimit_rule_type,
