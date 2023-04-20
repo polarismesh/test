@@ -13,9 +13,9 @@ from src.polaris_test_lib.polaris_testcase import PolarisTestCase
         "case_desc": "Using correct username and password to get token."
     },
     "irregular": {
-        "username": "polaris",
-        "password": "polaris-error",
-        "owner": "polaris",
+        "username": settings.POLARIS_SERVER_USERNAME,
+        "password": settings.POLARIS_SERVER_PASSWORD + "error",
+        "owner": settings.POLARIS_SERVER_TOKEN_OWNER,
         "case_desc": "Using correct username and error password to get token."
     },
 })
