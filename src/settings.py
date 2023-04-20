@@ -4,15 +4,16 @@ Use settings.get("CONFIG_NAME", "alternate_value") or settings.CONFIG_NAME to re
 """
 
 # polaris console address
-POLARIS_SERVER_ADDR = "10.0.3.58"
+POLARIS_SERVER_ADDR = "127.0.0.1"
+
 # polaris console root username
-POLARIS_SERVER_USERNAME = "100024759858"
+POLARIS_SERVER_USERNAME = "polaris"
 
 # polaris console root password
-POLARIS_SERVER_PASSWORD = "polarismesh@2022"
+POLARIS_SERVER_PASSWORD = "polaris"
 
 # polaris console token owner, default is polaris
-POLARIS_SERVER_TOKEN_OWNER = "100020616957"
+POLARIS_SERVER_TOKEN_OWNER = "polaris"
 
 # polaris console address
 POLARIS_CONSOLE_ADDR = "{POLARIS_SERVER_ADDR}:8080".format(POLARIS_SERVER_ADDR=POLARIS_SERVER_ADDR)

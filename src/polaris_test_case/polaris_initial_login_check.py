@@ -13,9 +13,9 @@ from src.polaris_test_lib.polaris_testcase import PolarisTestCase
         "case_desc": "Using correct username and password to get token."
     },
     "irregular": {
-        "username": "polaris",
-        "password": "polaris-error",
-        "owner": "polaris",
+        "username": settings.POLARIS_SERVER_USERNAME,
+        "password": settings.POLARIS_SERVER_PASSWORD + "error",
+        "owner": settings.POLARIS_SERVER_TOKEN_OWNER,
         "case_desc": "Using correct username and error password to get token."
     },
 })
@@ -43,7 +43,7 @@ class PolarisInitialLoginCheck(PolarisTestCase):
         self.start_step("Check return token and polaris code.")
         if "irregular" in self.casedataname:
             self.assert_("Fail! No return except login response.", login_resp is None)
-            self.assert_("Fail! No return except polaris code.", login_resp is None)
+            self.assert_("Fail! No return except polaris code.", polaris_code == 401001)
         elif "regular" in self.casedataname and login_resp is None:
             self.fail("No login response return!")
             return
