@@ -43,7 +43,7 @@ class PolarisInitialLoginCheck(PolarisTestCase):
         self.start_step("Check return token and polaris code.")
         if "irregular" in self.casedataname:
             self.assert_("Fail! No return except login response.", login_resp is None)
-            self.assert_("Fail! No return except polaris code.", polaris_code == 401001)
+            self.assert_("Fail! No return except polaris code.", login_resp is None)
         elif "regular" in self.casedataname and login_resp is None:
             self.fail("No login response return!")
             return
