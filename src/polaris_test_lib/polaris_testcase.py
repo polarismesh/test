@@ -30,6 +30,15 @@ class PolarisTestCase(TestCase):
                 "Check your config file in [{config_dir}] and set POLARIS_SERVER_HTTP_RESTFUL_API_ADDR in [{config_dir}]."
                     .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
 
+        POLARIS_CONSOLE_ADDR = settings.get("POLARIS_CONSOLE_ADDR", None)
+        if POLARIS_CONSOLE_ADDR is not None:
+            self.log_info("POLARIS_CONSOLE_API_ADDR: %s" % POLARIS_CONSOLE_ADDR)
+            self.polaris_console_addr = POLARIS_CONSOLE_ADDR
+        else:
+            self.fail(
+                "Check your config file in [{config_dir}] and set POLARIS_CONSOLE_ADDR in [{config_dir}]."
+                    .format(config_dir=os.environ["QTAF_SETTINGS_MODULE"]))
+
     def run_test(self):
         pass
 

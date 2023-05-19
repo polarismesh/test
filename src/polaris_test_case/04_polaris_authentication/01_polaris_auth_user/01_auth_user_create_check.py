@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+
+from src.polaris_test_lib.polaris import PolarisServer
+from src.polaris_test_lib.polaris_testcase import PolarisTestCase
+from testbase.testcase import TestCase
+from testbase import datadrive
+
+testdata = ({
+    "USER_01": {
+        "userinfo": [{"name": "test111", "comment": "auth autotest create user test111", "password": "123456",
+                      "source": "Polaris"}],
+        "expect_code": 200000,
+        "expect_info": "execute success"
+    },
+    "USER_02": {
+        "userinfo": [{"name": "", "comment": "auth autotest create user test111", "password": "123456",
+                      "source": "Polaris"}],
+        "expect_code": 400101,
+        "expect_info": "invalid user name"
+    },
+    "USER_03": {
+        "userinfo": [{"name": "test111", "comment": "auth autotest create user test111", "password": "",
+                      "source": "Polaris"}],
+        "expect_code": 400412,
+        "expect_info": "invalid user password"
+    }
+})
+
+
+@datadrive.DataDrive(testdata)
+class AuthUserCreateCheck(PolarisTestCase):
+    """
+    Used to test create user.
+    """
+    owner = "saracpli"
+    status = TestCase.EnumStatus.Ready
+    priority = TestCase.EnumPriority.Normal
+    timeout = 5
+
+    def run_test(self):
+        # Get token
+        self.get_console_token()
+        self.polaris_server = PolarisServer(self.token, self.user_id)
+        # ==================================
+        self.start_step("Create user test.")
+        self.create_user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.log_info(self.create_user_url)
+        rsp = self.polaris_server.create_user(self.create_user_url, self.token, self.user_id, self.casedata["userinfo"])
+        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == self.casedata["expect_code"])
+        self.assert_("Success! Return except login response.", rsp.json().get("info") == self.casedata["expect_info"])
+
+        if self.test_result.passed:
+            self.log_info("Create user success!")
+        else:
+            self.log_info("Create user fail!")
+
+
+if __name__ == '__main__':
+    AuthUserCreateCheck().debug_run()
