@@ -1,5 +1,4 @@
 import requests
-import json
 from testbase import logger
 
 from src.polaris_test_lib.common_lib import CommonLib
@@ -26,10 +25,13 @@ class PolarisServer(CommonLib):
 
     EUREKA_REGISTER_PATH = "/eureka/apps"
 
-    USER_PATH = "/core/v1/users"
-    DELETE_USER_PATH = "/core/v1/users/delete"
-    MODIFY_USER_PASSWORD_PATH = "/core/v1/user/password"
+    USER_PATH = '/core/v1/users'
+    DELETE_USER_PATH = USER_PATH + '/delete'
     DESCRIBE_USER_PATH = "/core/v1/user"
+    MODIFY_USER_PASSWORD_PATH = DESCRIBE_USER_PATH + '/password'
+    VIEW_USER_TOKEN_PATH = DESCRIBE_USER_PATH + '/token'
+    REFRESH_USER_TOKEN_PATH = VIEW_USER_TOKEN_PATH + '/refresh'
+    OPERATE_USER_TOKEN_PATH = VIEW_USER_TOKEN_PATH + '/status'
 
     def __init__(self, auth_token, auth_user_id):
         self.headers = {"X-Polaris-Token": auth_token, "X-Polaris-User": auth_user_id}
@@ -236,45 +238,43 @@ class PolarisServer(CommonLib):
         rsp = self.post(url, json=[req], headers=self.headers)
         return rsp
 
-    def create_user(self, url, token, user_id, user_info):
-        headers = {"Content-Type": "application/json", "X-Polaris-Token": token, "X-Polaris-User": user_id}
+    def create_user(self, url, user_info):
         rsp = self.post(url, json=user_info, headers=self.headers)
         return rsp
 
-    def delete_user(self, url, token, user_id, del_user_id):
-        req = '[{"id":"' + del_user_id + '"}]'
-        headers = {"Content-Type": "application/json", "X-Polaris-Token": token, "X-Polaris-User": user_id}
-        rsp = self.post(url, json=req, headers=self.headers)
+    def delete_user(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.post(url, json=[req], headers=self.headers)
         return rsp
 
-    def describe_users(self, url, token, user_id, main_user_id, limit=10, offset=0, get_by_id=False):
-        headers = {"Content-Type": "application/json", "X-Polaris-Token": token, "X-Polaris-User": user_id}
+    def describe_users(self, url, user_id, limit=10, offset=0, get_by_id=False):
         req = self._format_params(limit=limit, offset=offset)
         if get_by_id:
-            if user_id == main_user_id:
-                req = self._format_params(id=main_user_id)
-            else:
-                req = self._format_params(id=user_id)
-        rsp = self.get(url, params=req, headers=headers)
+            req = self._format_params(id=user_id)
+        rsp = self.get(url, params=req, headers=self.headers)
         return rsp
 
-    def modify_user_password(self, url, token, user_id, new_password, old_password=None, update_user_id=None):
-        # {"id":"e7a4a6ef90d546dfa379274d5bbf2635","new_password":"111111"}
-        headers = {"Content-Type": "application/json", "X-Polaris-Token": token, "X-Polaris-User": user_id}
-        if update_user_id is not None:
-            req = self._format_params(id=update_user_id, new_password=new_password, old_password=old_password)
-        else:
-            req = self._format_params(id=user_id, new_password=new_password, old_password=old_password)
-        print("json.dumps(req)---->%s " % json.dumps(req))
-        # rsp = self.put(url, params={}, body=json.dumps(req), headers=headers)
-        rsp = self.put(url, params=req, headers=headers)
+    def modify_user_password(self, url, user_id, new_password, old_password=None):
+        req = self._format_params(id=user_id, new_password=new_password, old_password=old_password)
+        rsp = self.put(url, json=req, headers=self.headers)
         return rsp
 
-    def modify_user_info(self, token, user_id, mobile=None, email=None, comment=None, update_user_id=None):
-        # {"id":"e7a4a6ef90d546dfa379274d5bbf2635","mobile":"111","email":"111"}
-        headers = {"Content-Type": "application/json", "X-Polaris-Token": token, "X-Polaris-User": user_id}
-        if update_user_id is not None:
-            req = self._format_params(id=update_user_id, mobile=mobile, email=email, comment=comment)
-        else:
-            req = self._format_params(id=user_id, mobile=mobile, email=email, comment=comment)
-        rsp = self.put('/core/v1/user', params={}, body=json.dumps(req), headers=headers)
+    def modify_user_info(self, url, user_id, mobile=None, email=None, comment=None):
+        req = self._format_params(id=user_id, mobile=mobile, email=email, comment=comment)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp
+
+    def view_user_token(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.get(url, params=req, headers=self.headers)
+        return rsp
+
+    def refresh_user_token(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp
+
+    def operate_user_token(self, url, user_id, token_enable=False):
+        req = self._format_params(id=user_id, token_enable=token_enable)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp

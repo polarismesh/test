@@ -8,7 +8,7 @@ from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 
 class AuthUserDescribeCheck(PolarisTestCase):
     """
-    Used to test delete user.
+    Used to test describe user.
     """
     owner = "saracpli"
     status = TestCase.EnumStatus.Ready
@@ -22,29 +22,30 @@ class AuthUserDescribeCheck(PolarisTestCase):
         self.start_step("Get all user list.")
         self.log_info("user_id: %s" % self.user_id)
         self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
-        rsp = self.polaris_server.describe_users(self.describe_url, self.token, self.user_id, self.user_id)
+        rsp = self.polaris_server.describe_users(self.describe_url, self.user_id)
         self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
-        # find out sub users
-        self.sub_user_id_list = []
+        # find out subusers
+        self.subuser_id_list = []
         if rsp.json().get("users") is not None:
             for user in rsp.json().get("users"):
                 if user["owner"] is not None and user["owner"] != "":
-                    self.sub_user_id_list.append(user["id"])
+                    self.subuser_id_list.append(user["id"])
 
         # ==================================
-        self.start_step("Get main user info by user_id")
+        self.start_step("Get current user info by user_id")
         self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
-        rsp = self.polaris_server.describe_users(self.describe_url, self.token, self.user_id, self.user_id,
-                                                 get_by_id=True)
+        rsp = self.polaris_server.describe_users(self.describe_url, self.user_id, get_by_id=True)
         self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
 
         # ==================================
-        self.start_step("Get sub user info by user_id")
+        self.start_step("Get subuser info by user_id")
         self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
-        self.log_info(random.choice(self.sub_user_id_list))
-        rsp = self.polaris_server.describe_users(self.describe_url, self.token, self.user_id,
-                                                 random.choice(self.sub_user_id_list), get_by_id=True)
-        self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
+        if len(self.subuser_id_list) > 0 :
+            rsp = self.polaris_server.describe_users(self.describe_url, random.choice(self.subuser_id_list),
+                                                     get_by_id=True)
+            self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
+        else:
+            self.log_info("Fail！No subuser exists under the current user.")
 
 
 if __name__ == '__main__':

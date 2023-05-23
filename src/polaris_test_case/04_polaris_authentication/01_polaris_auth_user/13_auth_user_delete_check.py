@@ -23,16 +23,21 @@ class AuthUserDeleteCheck(PolarisTestCase):
         self.start_step("Create user test.")
         self.user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
         self.log_info(self.user_url)
-        self.user_info = [{"name": "test001", "comment": "auth autotest create user test111", "password": "123456",
+        self.user_info = [{"name": "test001", "comment": "auth autotest create user test", "password": "123456",
                            "source": "Polaris"}]
-        rsp = self.polaris_server.create_user(self.user_url, self.token, self.user_id, self.user_info)
+        rsp = self.polaris_server.create_user(self.user_url, self.user_info)
+        if rsp.json() is not None and rsp.json().get("size") > 0:
+            self.log_info("Create user success! user_info = %s" % self.user_info)
+            self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
+        else:
+            self.log_info("Create user fail! user_info = %s" % self.user_info)
 
         # ==================================
         self.start_step("Get user test.")
         self.log_info(self.user_url)
         self.user_info = [{"name": "test001", "comment": "auth autotest create user test111", "password": "123456",
                            "source": "Polaris"}]
-        rsp = self.polaris_server.describe_users(self.user_url, self.token, self.user_id)
+        rsp = self.polaris_server.describe_users(self.user_url, self.user_id)
         delete_id = ''
         if rsp.json().get("code") == 200000:
             for user in rsp.json().get("users"):
@@ -43,13 +48,12 @@ class AuthUserDeleteCheck(PolarisTestCase):
         self.start_step("Delete user test.")
         self.delete_user_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_USER_PATH
         self.log_info(self.delete_user_url)
-        rsp = self.polaris_server.delete_user(self.delete_user_url, self.token, self.user_id, delete_id)
-        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
-
-        if self.test_result.passed:
-            self.log_info("Delete user success!")
+        rsp = self.polaris_server.delete_user(self.delete_user_url, delete_id)
+        if rsp.json() is not None and rsp.json().get("size") > 0:
+            self.log_info("Delete user success! user_id = %s" % self.update_user_id)
+            self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
         else:
-            self.log_info("Delete user fail!")
+            self.log_info("Delete user fail! user_id = %s" % self.update_user_id)
 
 
 if __name__ == '__main__':

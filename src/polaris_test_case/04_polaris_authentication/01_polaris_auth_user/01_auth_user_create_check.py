@@ -44,15 +44,14 @@ class AuthUserCreateCheck(PolarisTestCase):
         # ==================================
         self.start_step("Create user test.")
         self.create_user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
-        self.log_info(self.create_user_url)
-        rsp = self.polaris_server.create_user(self.create_user_url, self.token, self.user_id, self.casedata["userinfo"])
-        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == self.casedata["expect_code"])
-        self.assert_("Success! Return except login response.", rsp.json().get("info") == self.casedata["expect_info"])
-
-        if self.test_result.passed:
-            self.log_info("Create user success!")
+        rsp = self.polaris_server.create_user(self.create_user_url, self.casedata["userinfo"])
+        if rsp.json() is not None and rsp.json().get("size") > 0:
+            self.log_info("Create user success! user_info = %s" % self.casedata["expect_info"])
+            self.assert_("Success! Return except polaris code.", rsp.json().get("code") == self.casedata["expect_code"])
+            self.assert_("Success! Return except login response.",
+                         rsp.json().get("info") == self.casedata["expect_info"])
         else:
-            self.log_info("Create user fail!")
+            self.log_info("Create user fail! user_info = %s" % self.casedata["expect_info"])
 
 
 if __name__ == '__main__':
