@@ -15,13 +15,6 @@ class AuthUserGetTokenCheck(PolarisTestCase):
     def run_test(self):
         # ===========================
         self.get_console_token()
-        if self.token is not None:
-            self.log_info("Success! Return expected value.")
-            self.assert_("Success! Return expected value.", self.token is not None)
-        else:
-            self.log_info("Fail! Return an unexpected value.")
-            self.assert_("Fail! Return an unexpected value.", self.token is None)
-
 
 if __name__ == '__main__':
     AuthUserGetTokenCheck().debug_run()

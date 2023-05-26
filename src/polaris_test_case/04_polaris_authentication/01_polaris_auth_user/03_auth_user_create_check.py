@@ -4,23 +4,33 @@ from src.polaris_test_lib.polaris import PolarisServer
 from src.polaris_test_lib.polaris_testcase import PolarisTestCase
 from testbase.testcase import TestCase
 from testbase import datadrive
+from src.polaris_test_lib.common_lib import CommonLib
 
 testdata = ({
     "USER_01": {
-        "userinfo": [{"name": "test111", "comment": "auth autotest create user test111", "password": "123456",
-                      "source": "Polaris"}],
+        "userinfo": [
+            {"name": "autotest_user_%s" % CommonLib._random_num(), "comment": "auth autotest create user comment",
+             "password": "123456", "source": "Polaris"}],
         "expect_code": 200000,
         "expect_info": "execute success"
     },
     "USER_02": {
-        "userinfo": [{"name": "", "comment": "auth autotest create user test111", "password": "123456",
+        "userinfo": [
+            {"name": "autotest_user_%s" % CommonLib._random_num(), "comment": "auth autotest create user comment",
+             "password": "123456", "source": "Polaris"}],
+        "expect_code": 200000,
+        "expect_info": "execute success"
+    },
+    "USER_03": {
+        "userinfo": [{"name": "", "comment": "auth autotest create user comment", "password": "123456",
                       "source": "Polaris"}],
         "expect_code": 400101,
         "expect_info": "invalid user name"
     },
-    "USER_03": {
-        "userinfo": [{"name": "test111", "comment": "auth autotest create user test111", "password": "",
-                      "source": "Polaris"}],
+    "USER_04": {
+        "userinfo": [
+            {"name": "autotest_user_%s" % CommonLib._random_num(), "comment": "auth autotest create user comment",
+             "password": "", "source": "Polaris"}],
         "expect_code": 400412,
         "expect_info": "invalid user password"
     }

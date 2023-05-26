@@ -32,7 +32,7 @@ class AuthUserDescribeCheck(PolarisTestCase):
                     self.subuser_id_list.append(user["id"])
 
         # ==================================
-        self.start_step("Get current user info by user_id")
+        self.start_step("Get primary user info by user_id")
         self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.describe_url, self.user_id, get_by_id=True)
         self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
@@ -40,7 +40,7 @@ class AuthUserDescribeCheck(PolarisTestCase):
         # ==================================
         self.start_step("Get subuser info by user_id")
         self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
-        if len(self.subuser_id_list) > 0 :
+        if len(self.subuser_id_list) > 0:
             rsp = self.polaris_server.describe_users(self.describe_url, random.choice(self.subuser_id_list),
                                                      get_by_id=True)
             self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)

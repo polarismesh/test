@@ -18,13 +18,6 @@ class AuthUserResetTokenCheck(PolarisTestCase):
         # ===========================
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
-        if self.token is not None:
-            self.log_info("Success! Return expected value.")
-            self.assert_("Success! Return expected value.", self.token is not None)
-        else:
-            self.log_info("Fail! Return an unexpected value.")
-            self.assert_("Fail! Return an unexpected value.", self.token is None)
-
         # ===========================
         self.start_step("View user token")
         self.view_user_token_url = "http://" + self.polaris_console_addr + PolarisServer.VIEW_USER_TOKEN_PATH

@@ -1,3 +1,7 @@
+import random
+from faker import Faker
+
+
 class CommonLib:
     @classmethod
     def _format_params(cls, **kwargs):
@@ -32,3 +36,17 @@ class CommonLib:
         import struct
 
         return socket.inet_ntoa(struct.pack('>I', random.randint(1, 0xffffffff)))
+
+    @classmethod
+    def _random_num(cls):
+        return random.randint(100000, 999999)
+
+    @classmethod
+    def _random_phone_num(cls):
+        fake = Faker(locale='zh_CN')
+        return fake.phone_number()
+
+    @classmethod
+    def _random_email(cls):
+        fake = Faker(locale='zh_CN')
+        return fake.safe_email()
