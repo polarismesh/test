@@ -1,4 +1,5 @@
 import random
+os.system("pip3 install faker")
 from faker import Faker
 
 
