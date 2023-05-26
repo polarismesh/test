@@ -9,7 +9,17 @@
     "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.01_service_ratelimit_create_check",
     "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.02_service_ratelimit_describe_check",
     "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.03_service_ratelimit_modify_check",
-    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.04_service_ratelimit_delete_check"
+    "polaris_test_case.02_polaris_service.03_polaris_service_governance.polaris_service_ratelimit.04_service_ratelimit_delete_check",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.01_auth_user_login_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.02_auth_user_get_token_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.03_auth_user_create_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.04_auth_user_modify_password_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.05_auth_user_reset_token_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.06_auth_user_dsiable_token_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.07_auth_user_enable_token_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.10_auth_user_modify_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.12_auth_user_describe_check.py",
+    "polaris_test_case.04_polaris_authentication.01_polaris_auth_user.13_auth_user_delete_check.py"
   ],
   "excluded_name": [],
   "owner": [],

@@ -25,6 +25,14 @@ class PolarisServer(CommonLib):
 
     EUREKA_REGISTER_PATH = "/eureka/apps"
 
+    USER_PATH = '/core/v1/users'
+    DELETE_USER_PATH = USER_PATH + '/delete'
+    DESCRIBE_USER_PATH = "/core/v1/user"
+    MODIFY_USER_PASSWORD_PATH = DESCRIBE_USER_PATH + '/password'
+    VIEW_USER_TOKEN_PATH = DESCRIBE_USER_PATH + '/token'
+    REFRESH_USER_TOKEN_PATH = VIEW_USER_TOKEN_PATH + '/refresh'
+    OPERATE_USER_TOKEN_PATH = VIEW_USER_TOKEN_PATH + '/status'
+
     def __init__(self, auth_token, auth_user_id):
         self.headers = {"X-Polaris-Token": auth_token, "X-Polaris-User": auth_user_id}
 
@@ -228,4 +236,45 @@ class PolarisServer(CommonLib):
     def delete_service_ratelimit_rule(self, url, rule_id):
         req = self._format_params(id=rule_id)
         rsp = self.post(url, json=[req], headers=self.headers)
+        return rsp
+
+    def create_user(self, url, user_info):
+        rsp = self.post(url, json=user_info, headers=self.headers)
+        return rsp
+
+    def delete_user(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.post(url, json=[req], headers=self.headers)
+        return rsp
+
+    def describe_users(self, url, user_id, limit=10, offset=0, get_by_id=False):
+        req = self._format_params(limit=limit, offset=offset)
+        if get_by_id:
+            req = self._format_params(id=user_id)
+        rsp = self.get(url, params=req, headers=self.headers)
+        return rsp
+
+    def modify_user_password(self, url, user_id, new_password, old_password=None):
+        req = self._format_params(id=user_id, new_password=new_password, old_password=old_password)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp
+
+    def modify_user_info(self, url, user_id, mobile=None, email=None, comment=None):
+        req = self._format_params(id=user_id, mobile=mobile, email=email, comment=comment)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp
+
+    def view_user_token(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.get(url, params=req, headers=self.headers)
+        return rsp
+
+    def refresh_user_token(self, url, user_id):
+        req = self._format_params(id=user_id)
+        rsp = self.put(url, json=req, headers=self.headers)
+        return rsp
+
+    def operate_user_token(self, url, user_id, token_enable=False):
+        req = self._format_params(id=user_id, token_enable=token_enable)
+        rsp = self.put(url, json=req, headers=self.headers)
         return rsp
