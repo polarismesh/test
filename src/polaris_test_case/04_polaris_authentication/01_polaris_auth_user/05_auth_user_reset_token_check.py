@@ -10,7 +10,7 @@ class AuthUserResetTokenCheck(PolarisTestCase):
     Used to reset user token test.
     """
     owner = "saracpli"
-    status = TestCase.EnumStatus.Design
+    status = TestCase.EnumStatus.Ready
     priority = TestCase.EnumPriority.Normal
     timeout = 5
 

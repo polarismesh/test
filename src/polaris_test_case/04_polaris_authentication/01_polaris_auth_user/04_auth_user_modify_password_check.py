@@ -10,7 +10,7 @@ class AuthUserModifyPasswordCheck(PolarisTestCase):
     Used to test modify password test.
     """
     owner = "saracpli"
-    status = TestCase.EnumStatus.Design
+    status = TestCase.EnumStatus.Ready
     priority = TestCase.EnumPriority.Normal
     timeout = 5
 
