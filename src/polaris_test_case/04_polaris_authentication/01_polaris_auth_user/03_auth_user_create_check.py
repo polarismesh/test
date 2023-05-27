@@ -53,7 +53,7 @@ class AuthUserCreateCheck(PolarisTestCase):
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ==================================
         self.start_step("Create user test.")
-        self.create_user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.create_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.create_user(self.create_user_url, self.casedata["userinfo"])
         if rsp.json() is not None and rsp.json().get("size") > 0:
             self.log_info("Create user success! user_info = %s" % self.casedata["expect_info"])
