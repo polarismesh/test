@@ -22,7 +22,7 @@ class AuthUserEnableTokenCheck(PolarisTestCase):
 
         # ==================================
         self.start_step("Get user info")
-        self.user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.user_url, self.user_id)
         self.subuser_id_list = []
         if rsp.json().get("code") == 200000:
@@ -36,7 +36,7 @@ class AuthUserEnableTokenCheck(PolarisTestCase):
 
         self.start_step("Enable subuser token.")
         self.log_info(random.choice(self.subuser_id_list))
-        operate_user_token_url = "http://" + self.polaris_console_addr + PolarisServer.OPERATE_USER_TOKEN_PATH
+        operate_user_token_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.OPERATE_USER_TOKEN_PATH
         rsp = self.polaris_server.operate_user_token(operate_user_token_url, random.choice(self.subuser_id_list),
                                                      token_enable=True)
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)

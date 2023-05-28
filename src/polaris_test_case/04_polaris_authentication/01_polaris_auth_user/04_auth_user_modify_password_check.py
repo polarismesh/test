@@ -19,7 +19,7 @@ class AuthUserModifyPasswordCheck(PolarisTestCase):
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ==================================
         self.start_step("Create user test.")
-        self.user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         self.user_info = [
             {"name": "autotest_user_%s" % CommonLib._random_num(), "comment": "auth autotest create user comment",
              "password": "123456", "source": "Polaris"}]
@@ -41,26 +41,26 @@ class AuthUserModifyPasswordCheck(PolarisTestCase):
 
         # ==================================
         self.start_step("Modify primary user password test.")
-        self.modify_user_password_url = "http://" + self.polaris_console_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
+        self.modify_user_password_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
         self.new_password = "polaris"
         rsp = self.polaris_server.modify_user_password(self.modify_user_password_url, self.user_id, self.new_password)
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
 
         # ==================================
         self.start_step("Modify  subuser password test.")
-        self.modify_user_password_url = "http://" + self.polaris_console_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
+        self.modify_user_password_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
         rsp = self.polaris_server.modify_user_password(self.modify_user_password_url, subuser_id_list[0], "123456")
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
 
         # ==================================
         self.start_step("Modify subuser password test,new password is blank.")
-        self.modify_user_password_url = "http://" + self.polaris_console_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
+        self.modify_user_password_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.MODIFY_USER_PASSWORD_PATH
         rsp = self.polaris_server.modify_user_password(self.modify_user_password_url, subuser_id_list[0], "")
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 500000)
 
         # ==================================
         self.start_step("Delete exist subuser test.")
-        self.delete_user_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_USER_PATH
+        self.delete_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_USER_PATH
         rsp = self.polaris_server.delete_user(self.delete_user_url, subuser_id_list[0])
         if rsp.json() is not None and rsp.json().get("size") > 0:
             self.log_info("Delete user success! user_id = %s" % subuser_id_list[0])

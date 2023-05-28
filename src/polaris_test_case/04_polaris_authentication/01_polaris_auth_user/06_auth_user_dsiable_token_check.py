@@ -22,7 +22,7 @@ class AuthUserDisableTokenCheck(PolarisTestCase):
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ==================================
         self.start_step("Get user")
-        self.user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.user_url, self.user_id)
         self.subuser_id_list = []
         self.subuser_name_list = []
@@ -33,7 +33,7 @@ class AuthUserDisableTokenCheck(PolarisTestCase):
                     self.subuser_name_list.append(user["name"])
         # ===========================
         self.start_step("Disable: The primary user token cannot be disabled.")
-        self.operate_user_token_url = "http://" + self.polaris_console_addr + PolarisServer.OPERATE_USER_TOKEN_PATH
+        self.operate_user_token_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.OPERATE_USER_TOKEN_PATH
         rsp = self.polaris_server.operate_user_token(self.operate_user_token_url, self.user_id, token_enable=False)
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 401001)
 
@@ -50,7 +50,7 @@ class AuthUserDisableTokenCheck(PolarisTestCase):
         # ===========================
         self.start_step("Disable: After the token of the subuser is disabled, access to the subuser fails.")
         # Login by subuser, get subuser token
-        login_url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH
+        login_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.LOGIN_PATH
         rsp = self.get_console_token(username=self.subuser_name_list[0], password='123456', owner='polaris')
         self.polaris_server.__init__(self.token, self.user_id)
         rsp = self.polaris_server.operate_user_token(self.operate_user_token_url, self.subuser_id_list[0])
