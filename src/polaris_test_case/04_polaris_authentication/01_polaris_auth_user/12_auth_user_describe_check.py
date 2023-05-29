@@ -21,7 +21,7 @@ class AuthUserDescribeCheck(PolarisTestCase):
         # ==================================
         self.start_step("Get all user list.")
         self.log_info("user_id: %s" % self.user_id)
-        self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.describe_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.describe_url, self.user_id)
         self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
         # find out subusers
@@ -33,13 +33,13 @@ class AuthUserDescribeCheck(PolarisTestCase):
 
         # ==================================
         self.start_step("Get primary user info by user_id")
-        self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.describe_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.describe_url, self.user_id, get_by_id=True)
         self.assert_("Success! Return except code.", rsp.json().get("code") == 200000)
 
         # ==================================
         self.start_step("Get subuser info by user_id")
-        self.describe_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.describe_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         if len(self.subuser_id_list) > 0:
             rsp = self.polaris_server.describe_users(self.describe_url, random.choice(self.subuser_id_list),
                                                      get_by_id=True)
