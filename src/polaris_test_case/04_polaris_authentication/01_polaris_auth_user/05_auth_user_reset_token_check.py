@@ -10,7 +10,7 @@ class AuthUserResetTokenCheck(PolarisTestCase):
     Used to reset user token test.
     """
     owner = "saracpli"
-    status = TestCase.EnumStatus.Design
+    status = TestCase.EnumStatus.Ready
     priority = TestCase.EnumPriority.Normal
     timeout = 5
 
@@ -20,20 +20,20 @@ class AuthUserResetTokenCheck(PolarisTestCase):
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ===========================
         self.start_step("View user token")
-        self.view_user_token_url = "http://" + self.polaris_console_addr + PolarisServer.VIEW_USER_TOKEN_PATH
+        self.view_user_token_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.VIEW_USER_TOKEN_PATH
         rsp = self.polaris_server.view_user_token(self.view_user_token_url, self.user_id)
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
 
         # ===========================
         self.start_step("Reset user token")
-        self.refresh_user_token_url = "http://" + self.polaris_console_addr + PolarisServer.REFRESH_USER_TOKEN_PATH
+        self.refresh_user_token_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.REFRESH_USER_TOKEN_PATH
         rsp = self.polaris_server.refresh_user_token(self.refresh_user_token_url, self.user_id)
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
         refresh_token = rsp.json().get("user")["auth_token"]
         time.sleep(3)
 
         self.start_step("Check：After the user token is reset, the old token becomes unavailable")
-        self.describe_user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.describe_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.describe_user_url, self.user_id)
         if rsp.json().get("code") == 407:
             self.log_info("Success! Return except polaris code.")

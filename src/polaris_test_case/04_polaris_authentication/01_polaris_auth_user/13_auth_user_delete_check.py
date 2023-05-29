@@ -22,7 +22,7 @@ class AuthUserDeleteCheck(PolarisTestCase):
         self.polaris_server = PolarisServer(self.token, self.user_id)
         # ==================================
         self.start_step("Create user test.")
-        self.user_url = "http://" + self.polaris_console_addr + PolarisServer.USER_PATH
+        self.user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         self.log_info(self.user_url)
         self.user_info = [
             {"name": "autotest_user_%s" % CommonLib._random_num(), "comment": "auth autotest create user comment",
@@ -46,7 +46,7 @@ class AuthUserDeleteCheck(PolarisTestCase):
         # ==================================
         for delete_id in delete_id_list:
             self.start_step("Delete all subuser test.")
-            self.delete_user_url = "http://" + self.polaris_console_addr + PolarisServer.DELETE_USER_PATH
+            self.delete_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DELETE_USER_PATH
             rsp = self.polaris_server.delete_user(self.delete_user_url, delete_id)
             if rsp.json() is not None and rsp.json().get("size") > 0:
                 self.log_info("Delete user success! user_id = %s" % delete_id)

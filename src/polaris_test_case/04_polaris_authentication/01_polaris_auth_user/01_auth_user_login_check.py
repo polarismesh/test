@@ -28,13 +28,13 @@ class AuthUserLoginCheck(PolarisTestCase):
 
     """
     owner = "saracpli"
-    status = TestCase.EnumStatus.Design
+    status = TestCase.EnumStatus.Ready
     priority = TestCase.EnumPriority.Normal
     timeout = 5
 
     def run_test(self):
         # ===========================
-        login_url = "http://" + self.polaris_console_addr + PolarisServer.LOGIN_PATH
+        login_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.LOGIN_PATH
         # ===========================
         self.start_step(self.casedata["case_desc"])
         rsp = PolarisServer.get_initial_token(url=login_url, username=self.casedata["username"],
