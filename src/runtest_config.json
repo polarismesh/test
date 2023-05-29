@@ -34,7 +34,7 @@
   "tag": [],
   "excluded_tag": [],
   "working_dir": "test_results",
-  "stop_on_failure": true,
+  "stop_on_failure": false,
   "execute_type": "sequential",
   "report_type": "html",
   "report_args": "--title polaris-autotest-results ",
