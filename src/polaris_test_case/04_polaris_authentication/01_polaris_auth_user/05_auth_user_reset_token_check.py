@@ -35,11 +35,12 @@ class AuthUserResetTokenCheck(PolarisTestCase):
         self.start_step("Check：After the user token is reset, the old token becomes unavailable")
         self.describe_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.USER_PATH
         rsp = self.polaris_server.describe_users(self.describe_user_url, self.user_id)
-        if rsp.json().get("code") == 407:
+        # old token verify fail
+        if rsp.json().get("code") == 403001:
             self.log_info("Success! Return except polaris code.")
         else:
             self.log_info("Fail! Return unexcept polaris code:%s" % rsp.json().get("code"))
-        self.assert_("Success! Get user info failed.", rsp.json().get("code") == 407)
+        self.assert_("Success! Get user info failed.", rsp.json().get("code") == 403001)
 
         self.start_step("Check：After the token is reset, the user needs to log in again")
         # After the token is reset,renew token
@@ -47,6 +48,7 @@ class AuthUserResetTokenCheck(PolarisTestCase):
         rsp = self.polaris_server.describe_users(self.describe_user_url, self.user_id)
         self.assert_("Success! Get user info failed.", rsp.json().get("code") == 200000)
         self.log_info("Success! Return except polaris code.")
+
 
 if __name__ == '__main__':
     AuthUserResetTokenCheck().debug_run()
