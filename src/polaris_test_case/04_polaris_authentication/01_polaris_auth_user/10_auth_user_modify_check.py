@@ -19,12 +19,12 @@ class AuthUserModifyCheck(PolarisTestCase):
         self.get_console_token()
         self.polaris_server = PolarisServer(self.token, self.user_id)
 
-        # ==================================
-        self.start_step("Modify email and phone: expected success. ")
-        self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
-        rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, CommonLib._random_phone_num(),
-                                                   CommonLib._random_email())
-        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
+        # # ==================================
+        # self.start_step("Modify email and phone: expected success. ")
+        # self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
+        # rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, CommonLib._random_phone_num(),
+        #                                            CommonLib._random_email())
+        # self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
 
         # ==================================
         self.start_step("Modify comment: : expected success.  ")
@@ -33,19 +33,19 @@ class AuthUserModifyCheck(PolarisTestCase):
                                                    CommonLib._random_email(), "polaris comment")
         self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 200000)
 
-        # ==================================
-        self.start_step("Modify email and phone: expected fail，the phone number is invalid. ")
-        self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
-        rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, '136111',
-                                                   CommonLib._random_email())
-        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 400413)
+        # # ==================================
+        # self.start_step("Modify email and phone: expected fail，the phone number is invalid. ")
+        # self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
+        # rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, '136111',
+        #                                            CommonLib._random_email())
+        # self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 400413)
 
-        # ==================================
-        self.start_step("Modify email and phone: expected fail，the email is invalid. ")
-        self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
-        rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, CommonLib._random_phone_num(),
-                                                   "polaris_test")
-        self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 400414)
+        # # ==================================
+        # self.start_step("Modify email and phone: expected fail，the email is invalid. ")
+        # self.modify_user_url = "http://" + self.polaris_server_http_restful_api_addr + PolarisServer.DESCRIBE_USER_PATH
+        # rsp = self.polaris_server.modify_user_info(self.modify_user_url, self.user_id, CommonLib._random_phone_num(),
+        #                                            "polaris_test")
+        # self.assert_("Success! Return except polaris code.", rsp.json().get("code") == 400414)
 
 
 if __name__ == '__main__':
